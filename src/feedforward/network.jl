@@ -1,31 +1,33 @@
+export FFNNet
+
 """
-`type FFNet{N,I}`
+`type FFNNet{N,I}`
 
 Type representing a Neural Network with `N` layers with input size `I`.
 
 ### Fields
-* `layers` (Vector{FFNLayer}): Vector containing each layer of the network
+* `layers` (Vector{FFNNLayer}): Vector containing each layer of the network
 * `weights` (Vector{Matrix{Float64}}): Vector containing the weight matrices between layers
 """
-type FFNet{N,I}
-    layers::Vector{FFNLayer}
+type FFNNet{N,I}
+    layers::Vector{FFNNLayer}
     weights::Vector{Matrix{Float64}}
 end
 
-function FFNet(sizeslayers::NTuple, inputsize::Int)
+function FFNNet(sizeslayers::NTuple, inputsize::Int)
     @assert length(sizeslayers) >= 3 "Network must have 3 or more layers"
 
     # Create an Array of Neural Network Layers of the right sizes
-    layers = Array(FFNLayer, length(sizeslayers))
+    layers = Array(FFNNLayer, length(sizeslayers))
     for i in 1:length(sizeslayers)-1
-        layers[i] = FFNLayer(sizeslayers[i])
+        layers[i] = FFNNLayer(sizeslayers[i])
     end
-    layers[end] = FFNLayer(sizeslayers[end], false) # Last layer without bias
+    layers[end] = FFNNLayer(sizeslayers[end], false) # Last layer without bias
 
-    return FFNet(layers, inputsize)
+    return FFNNet(layers, inputsize)
 end
 
-function FFNet(layers::Vector{FFNLayer}, inputsize::Int)
+function FFNNet(layers::Vector{FFNNLayer}, inputsize::Int)
     # Create a vector of weight matrices
     weights = Array(Matrix{Float64}, length(layers))
 
@@ -38,10 +40,10 @@ function FFNet(layers::Vector{FFNLayer}, inputsize::Int)
         weights[i] = rand(size(layers[i]), size(layers[i-1]) + 1)
     end
 
-    return FFNet{length(layers), inputsize}(layers, weights)
+    return FFNNet{length(layers), inputsize}(layers, weights)
 end
 
-function show{N,I}(io::IO, net::FFNet{N,I})
+function show{N,I}(io::IO, net::FFNNet{N,I})
     print(io, N, " Layers Feedforward Neural Network:\n  Input Size: ", I)
     for (i, l) in enumerate(net.layers)
         print(io, "\n  Layer ", i, ": ", size(l), " neurons")
@@ -53,11 +55,11 @@ function show{N,I}(io::IO, net::FFNet{N,I})
 end
 
 """
-`propagate!(net::FFNet{N,I}, x::Vector{Float64})`
+`propagate!(net::FFNNet{N,I}, x::Vector{Float64})`
 
 Propagate an input `x` through the network `net` and return the activation of the last layer
 """
-function propagate!{N,I}(net::FFNet{N,I}, x::Vector{Float64})
+function propagate!{N,I}(net::FFNNet{N,I}, x::Vector{Float64})
     @assert length(x) == I "Network does not support input size $length(x), only $I"
 
     # Insert bias unit on input and update first layer
@@ -73,11 +75,11 @@ function propagate!{N,I}(net::FFNet{N,I}, x::Vector{Float64})
 end
 
 """
-`train!(net::FFNet, inputs, outputs)`
+`train!(net::FFNNet, inputs, outputs)`
 
 Train the Neural Network with backpropagation using the examples provided.
 """
-function train!{N,I}(net::FFNet{N,I},
+function train!{N,I}(net::FFNNet{N,I},
                      inputs::Vector{Vector{Float64}},
                      outputs::Vector{Vector{Float64}})
 

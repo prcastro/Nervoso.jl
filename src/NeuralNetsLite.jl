@@ -1,9 +1,10 @@
 module NeuralNetsLite
 
 import Base: show, length, size, endof, getindex, setindex!, start, next, done
-export activate, update!, propagate!, train!, σ
+export activate, update!, propagate!, train!
 
-include("actfuns.jl")
-include("feedforward.jl")
+include("activation.jl")
+include("feedforward/net.jl")
+include("feedforward/layer.jl")
 
 end # module NeuralNetsLite

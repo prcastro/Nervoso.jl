@@ -14,17 +14,18 @@ type FFNNet{N,I}
     weights::Vector{Matrix{Float64}}
 end
 
-function FFNNet(sizeslayers::NTuple, inputsize::Int)
-    @assert length(sizeslayers) >= 3 "Network must have 3 or more layers"
+function FFNNet(sizes::Int...)
+    @assert length(sizes) >= 3 "Network must have 3 or more layers"
 
     # Create an Array of Neural Network Layers of the right sizes
-    layers = Array(FFNNLayer, length(sizeslayers))
-    for i in 1:length(sizeslayers)-1
-        layers[i] = FFNNLayer(sizeslayers[i])
+    # The first size corresponds to the input size of the network
+    layers = Array(FFNNLayer, length(sizes) - 1)
+    for i in 2:length(sizes) - 1
+        layers[i - 1] = FFNNLayer(sizes[i])
     end
-    layers[end] = FFNNLayer(sizeslayers[end], false) # Last layer without bias
+    layers[end] = FFNNLayer(sizes[end], false) # Last layer without bias
 
-    return FFNNet(layers, inputsize)
+    return FFNNet(layers, sizes[1])
 end
 
 function FFNNet(layers::Vector{FFNNLayer}, inputsize::Int)

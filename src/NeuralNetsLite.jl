@@ -4,7 +4,7 @@ import Base: show, length, size, endof, getindex, setindex!, start, next, done
 export activate, update!, propagate!, train!
 
 include("activation.jl")
-include("feedforward/network.jl")
 include("feedforward/layer.jl")
+include("feedforward/network.jl")
 
 end # module NeuralNetsLite

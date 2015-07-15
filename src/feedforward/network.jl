@@ -90,10 +90,10 @@ function propagate!{N,I}(net::FFNNet{N,I}, x::Vector{Float64})
     return activate(net.layers[end])
 end
 
-function backpropagate{L}(net::FFNNet{L,I},
-                       output_net::Vector{Float64},
-                       output_ex::Vector{Float64},
-                       error::Function)
+function backpropagate{L,I}(net::FFNNet{L,I},
+                            output_net::Vector{Float64},
+                            output_ex::Vector{Float64},
+                            error::Function)
     # Vector storing one delta vector for each layer
     deltas = Array(Vector{Float64}, L)
 

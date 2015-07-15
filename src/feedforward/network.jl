@@ -14,6 +14,10 @@ type FFNNet{N,I}
     weights::Vector{Matrix{Float64}}
 end
 
+#############################
+#        CONSTRUCTORS       #
+#############################
+
 function FFNNet(sizes::Int...)
     @assert length(sizes) >= 3 "Network must have 3 or more layers"
 
@@ -48,6 +52,10 @@ function FFNNet(layers::Vector{FFNNLayer}, inputsize::Int)
     return FFNNet{length(layers), inputsize}(layers, weights)
 end
 
+############################
+#      BASIC FUNCTIONS     #
+############################
+
 length{N,I}(net::FFNNet{N,I}) = N
 
 function show{N,I}(io::IO, net::FFNNet{N,I})
@@ -60,6 +68,10 @@ function show{N,I}(io::IO, net::FFNNet{N,I})
         print(io, ", ", string(l.activation))
     end
 end
+
+############################
+#      OTHER FUNCTIONS     #
+############################
 
 """
 `propagate!(net::FFNNet{N,I}, x::Vector{Float64})`

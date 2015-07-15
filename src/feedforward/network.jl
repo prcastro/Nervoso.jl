@@ -81,6 +81,31 @@ function propagate!{N,I}(net::FFNNet{N,I}, x::Vector{Float64})
     return activate(net.layers[end])
 end
 
+function backpropagate(net::FFNNet,
+                       output_net::Vector{Float64},
+                       output_ex::Vector{Float64},
+                       error::Function)
+    # Vector storing one delta vector for each layer
+    deltas = Array(Vector{Float64}, L)
+
+    # Compute δ for the last layer
+    #   δ^L = error'(y, ŷ) ⊙ ϕ'(s^L)
+    lastlayer = net.layers[L]
+    deltas[L] = der(error)(output_net, output_ex) .* activate(lastlayer, der(lastlayer.activation))
+
+    # Find δ of previous layers, backwards
+    for l in (L-1):-1:1
+       layer = net.layers[l]                 # δ^l
+       upweights = net.weights[l+1][:,2:end] # w^(l+1) without first column
+                                             #   (that corresponds to the bias unit)
+
+       # δ^l = ϕ'(s^l) ⊙ w^(l+1)' δ^(l+1)
+       deltas[l] =  activate(layer, der(layer.activation))[2:end] .* (upweights'deltas[l+1])
+    end
+
+    return deltas
+end
+
 """
 `train!(net::FFNNet, inputs, outputs)`
 
@@ -89,39 +114,25 @@ Train the Neural Network with backpropagation using the examples provided.
 function train!{N,I}(net::FFNNet{N,I},
                      inputs::Vector{Vector{Float64}},
                      outputs::Vector{Vector{Float64}};
-                     α::Real = 0.05,           # Learning rate
+                     α::Real = 0.05,              # Learning rate
                      error::Function = quaderror) # Error function
-    L = length(net)
 
+    L = length(net) # Number of layers in the network
     for ex in eachindex(inputs)
-        input_ex = vcat([1.0], inputs[ex])
-        output_ex = outputs[ex]
-        output_net = propagate!(net, inputs[ex]) # Forward propagate
+        input_ex = vcat([1.0], inputs[ex]) # Example's input with bias
+        output_ex = outputs[ex]            # Example's output
 
-        delta = Array(Vector{Float64}, L)
+        # Forward propagate the example, updating the neuron values
+        #  and obtaining an output
+        output_net = propagate!(net, inputs[ex])
 
-        # Compute δ for the last layer
-        #   δ^L = error'(y, ŷ) ⊙ ϕ'(s^L)
-        lastlayer = net.layers[L]
-        delta[L] = der(error)(output_net, output_ex) .* activate(lastlayer, der(lastlayer.activation))
-
-        # Backpropagate
-        for l in (L-1):-1:1
-            layer = net.layers[l] # δ^l
-            upweights = net.weights[l+1][:,2:end] # w^(l+1) without first column
-                                                  # (corresponding to bias unit)
-            # δ^l = ϕ'(s^l) ⊙ w^(l+1)'δ^(l+1)
-            delta[l] =  activate(layer, der(layer.activation))[2:end] .* (upweights'delta[l+1])
-        end
+        # Find the δs using the backpropagation of this example
+        deltas = backpropagate(net, output_net, output_ex, error)
 
         # Gradient Descent
-        net.weights[1] -= α * (delta[1] ⊗ input_ex)
+        net.weights[1] -= α * (deltas[1] ⊗ input_ex)
         for l in 2:L
-            net.weights[l] -= α * (delta[l] ⊗ net.layers[l-1].neurons)
+            net.weights[l] -= α * (deltas[l] ⊗ net.layers[l-1].neurons)
         end
     end
 end
-
-quaderror(output, example) = (norm(output - example))^2
-quaderrorprime(output, example) = 2(norm(output - example))
-derivatives[quaderror] = quaderrorprime

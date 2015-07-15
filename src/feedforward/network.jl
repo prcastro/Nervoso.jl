@@ -17,7 +17,6 @@ end
 #############################
 #        CONSTRUCTORS       #
 #############################
-
 function FFNNet(sizes::Int...)
     @assert length(sizes) >= 3 "Network must have 3 or more layers"
 
@@ -55,7 +54,6 @@ end
 ############################
 #      BASIC FUNCTIONS     #
 ############################
-
 length{N,I}(net::FFNNet{N,I}) = N
 
 function show{N,I}(io::IO, net::FFNNet{N,I})
@@ -72,7 +70,6 @@ end
 ############################
 #      OTHER FUNCTIONS     #
 ############################
-
 """
 `propagate!(net::FFNNet{N,I}, x::Vector{Float64})`
 
@@ -93,7 +90,7 @@ function propagate!{N,I}(net::FFNNet{N,I}, x::Vector{Float64})
     return activate(net.layers[end])
 end
 
-function backpropagate(net::FFNNet,
+function backpropagate{L}(net::FFNNet{L,I},
                        output_net::Vector{Float64},
                        output_ex::Vector{Float64},
                        error::Function)
@@ -123,13 +120,12 @@ end
 
 Train the Neural Network with backpropagation using the examples provided.
 """
-function train!{N,I}(net::FFNNet{N,I},
+function train!{L,I}(net::FFNNet{L,I},
                      inputs::Vector{Vector{Float64}},
                      outputs::Vector{Vector{Float64}};
                      α::Real = 0.05,              # Learning rate
                      error::Function = quaderror) # Error function
 
-    L = length(net) # Number of layers in the network
     for ex in eachindex(inputs)
         input_ex = vcat([1.0], inputs[ex]) # Example's input with bias
         output_ex = outputs[ex]            # Example's output

@@ -32,12 +32,16 @@ function FFNNet(layers::Vector{FFNNLayer}, inputsize::Int)
     # Create a vector of weight matrices
     weights = Array(Matrix{Float64}, length(layers))
 
+    ɛ(a,b) = sqrt(6)/(sqrt(a + b))
+
     # The first weight matrix is from the input (including bias)
     #  to the first layer (excluding bias unit)
-    weights[1] = rand(size(layers[1]), inputsize + 1)
+    eps = ɛ(size(layers[1]), inputsize)
+    weights[1] = rand(size(layers[1]), inputsize + 1)*2*eps - eps
 
     # Matrices from layer i-1 (including bias) to layer i
     for i in 2:length(layers)
+        eps = ɛ(size(layers[i]), size(layers[i-1]))
         weights[i] = rand(size(layers[i]), size(layers[i-1]) + 1)
     end
 
@@ -85,7 +89,7 @@ Train the Neural Network with backpropagation using the examples provided.
 function train!{N,I}(net::FFNNet{N,I},
                      inputs::Vector{Vector{Float64}},
                      outputs::Vector{Vector{Float64}};
-                     α::Float64 = 0.05,           # Learning rate
+                     α::Real = 0.05,           # Learning rate
                      error::Function = quaderror) # Error function
     L = length(net)
 

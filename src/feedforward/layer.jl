@@ -69,12 +69,15 @@ next(l::FFNNLayer, s) = (l[s], s+1)
 ############################
 #      OTHER FUNCTIONS     #
 ############################
-function activate(l::FFNNLayer)
+
+function activate(l::FFNNLayer, activation::Function)
     if l.bias
-        return map(Float64, vcat(l.neurons[1], map(l.activation, l)))
+        return map(Float64, vcat(l.neurons[1], map(activation, l)))
     else
-        return map(Float64, map(l.activation, l))
+        return map(Float64, map(activation, l))
     end
 end
+
+activate(l::FFNNLayer) = activate(l, l.activation)
 
 update!(l::FFNNLayer, x::Vector{Float64}) = l[1:end] = x

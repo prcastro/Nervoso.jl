@@ -44,6 +44,8 @@ function FFNNet(layers::Vector{FFNNLayer}, inputsize::Int)
     return FFNNet{length(layers), inputsize}(layers, weights)
 end
 
+length{N,I}(net::FFNNet{N,I}) = N
+
 function show{N,I}(io::IO, net::FFNNet{N,I})
     print(io, N, " Layers Feedforward Neural Network:\n  Input Size: ", I)
     for (i, l) in enumerate(net.layers)
@@ -82,6 +84,40 @@ Train the Neural Network with backpropagation using the examples provided.
 """
 function train!{N,I}(net::FFNNet{N,I},
                      inputs::Vector{Vector{Float64}},
-                     outputs::Vector{Vector{Float64}})
+                     outputs::Vector{Vector{Float64}};
+                     α::Float64 = 0.05,           # Learning rate
+                     error::Function = quaderror) # Error function
+    L = length(net)
 
+    for ex in eachindex(inputs)
+        input_ex = vcat([1.0], inputs[ex])
+        output_ex = outputs[ex]
+        output_net = propagate!(net, inputs[ex]) # Forward propagate
+
+        delta = Array(Vector{Float64}, L)
+
+        # Compute δ for the last layer
+        #   δ^L = error'(y, ŷ) ⊙ ϕ'(s^L)
+        lastlayer = net.layers[L]
+        delta[L] = der(error)(output_net, output_ex) .* activate(lastlayer, der(lastlayer.activation))
+
+        # Backpropagate
+        for l in (L-1):-1:1
+            layer = net.layers[l] # δ^l
+            upweights = net.weights[l+1][:,2:end] # w^(l+1) without first column
+                                                  # (corresponding to bias unit)
+            # δ^l = ϕ'(s^l) ⊙ w^(l+1)'δ^(l+1)
+            delta[l] =  activate(layer, der(layer.activation))[2:end] .* (upweights'delta[l+1])
+        end
+
+        # Gradient Descent
+        net.weights[1] -= α * (delta[1] ⊗ input_ex)
+        for l in 2:L
+            net.weights[l] -= α * (delta[l] ⊗ net.layers[l-1].neurons)
+        end
+    end
 end
+
+quaderror(output, example) = (norm(output - example))^2
+quaderrorprime(output, example) = 2(norm(output - example))
+derivatives[quaderror] = quaderrorprime

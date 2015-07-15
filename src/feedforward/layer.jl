@@ -52,7 +52,7 @@ function show{N}(io::IO, l::FFNNLayer{N})
     print(io, ", ", string(l.activation))
 end
 
-getindex{N}(l::FFNNLayer{N}, i) = l.bias ? l.neurons[i+1] : l.neurons[1]
+getindex{N}(l::FFNNLayer{N}, i) = l.bias ? l.neurons[i+1] : l.neurons[i]
 
 function setindex!{N}(l::FFNNLayer{N}, x, i)
     if l.bias

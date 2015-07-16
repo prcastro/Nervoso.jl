@@ -146,10 +146,10 @@ function train!{L,I}(net::FFNNet{L,I},
     end
 end
 
-function networkerror(net::FFNNet{L,I},
-                      inputs::Vector{Vector{Float64}},
-                      outputs::Vector{Vector{Float64}};
-                      error::Function = quaderror)
+function sampleerror{L,I}(net::FFNNet{L,I},
+                          inputs::Vector{Vector{Float64}},
+                          outputs::Vector{Vector{Float64}};
+                          error::Function = quaderror)
 
     total_error = 0
     for ex in eachindex(inputs)

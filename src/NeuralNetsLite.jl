@@ -1,7 +1,7 @@
 module NeuralNetsLite
 
 import Base: show, length, size, endof, getindex, setindex!, start, next, done
-export activate, update!, propagate!, train!
+export activate, update!, propagate!, train!, sampleerror
 
 "Outer product"
 ⊗(a,b) = a*b'

@@ -19,8 +19,7 @@ end
 #############################
 #        CONSTRUCTORS       #
 #############################
-FFNNLayer(n::Integer) = FFNNLayer{n}(vcat([1.0], zeros(n)), tanh, true)
-function FFNNLayer(n::Integer, bias::Bool)
+function FFNNLayer(n::Integer; bias::Bool = true)
     if bias
         return FFNNLayer{n}(vcat([1.0], zeros(n)), tanh, bias)
     else
@@ -28,8 +27,7 @@ function FFNNLayer(n::Integer, bias::Bool)
     end
 end
 
-FFNNLayer(n::Integer, f::Function) = FFNNLayer{n}(vcat([1.0], zeros(n)), f, true)
-function FFNNLayer(n::Integer, f::Function, bias::Bool)
+function FFNNLayer(n::Integer, f::Function; bias::Bool = true)
     if bias
         return FFNNLayer{n}(vcat([1.0], zeros(n)), f, bias)
     else
@@ -72,9 +70,9 @@ next(l::FFNNLayer, s) = (l[s], s+1)
 
 function activate(l::FFNNLayer, activation::Function)
     if l.bias
-        return map(Float64, vcat(l.neurons[1], map(activation, l)))
+        return vcat([1.0], activation(l[1:end]))
     else
-        return map(Float64, map(activation, l))
+        return activation(l[1:end])
     end
 end
 

@@ -26,7 +26,7 @@ function FFNNet(sizes::Int...)
     for i in 2:length(sizes) - 1
         layers[i - 1] = FFNNLayer(sizes[i])
     end
-    layers[end] = FFNNLayer(sizes[end], false) # Last layer without bias
+    layers[end] = FFNNLayer(sizes[end], bias=false) # Last layer without bias
 
     return FFNNet(layers, sizes[1])
 end
@@ -91,8 +91,8 @@ function propagate!{N,I}(net::FFNNet{N,I}, x::Vector{Float64})
 end
 
 function backpropagate{L,I}(net::FFNNet{L,I},
-                            output_net::Vector{Float64},
-                            output_ex::Vector{Float64},
+                            output::Vector{Float64},
+                            target::Vector{Float64},
                             error::Function)
     # Vector storing one delta vector for each layer
     δ = Array(Vector{Float64}, L)
@@ -100,7 +100,7 @@ function backpropagate{L,I}(net::FFNNet{L,I},
     # Compute δ for the last layer
     #   δ^L = ∂E/∂(last.neurons)
     last = net.layers[L]  # Last layer
-    δ[L] = der(error)(last.neurons, output_ex, last.activation)
+    δ[L] = der(error)(last.neurons, target, last.activation)
 
     # Find δ of previous layers, backwards
     for l in (L-1):-1:1
@@ -129,6 +129,7 @@ function train!{L,I}(net::FFNNet{L,I},
                      α::Real = 0.05,              # Learning rate
                      error::Function = quaderror) # Error function
 
+    # TODO: Implement momentum
     for ex in eachindex(inputs)
         input_ex   = vcat([1.0], inputs[ex])     # Example's input with bias
         output_ex  = outputs[ex]                 # Example's output
@@ -157,7 +158,7 @@ function sampleerror{L,I}(net::FFNNet{L,I},
                           outputs::Vector{Vector{Float64}};
                           error::Function = quaderror)
 
-    total_error = 0
+    total_error = 0.0
     for ex in eachindex(inputs)
         total_error += error(propagate!(net, inputs[ex]), outputs[ex])
     end

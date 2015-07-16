@@ -100,7 +100,7 @@ function backpropagate{L,I}(net::FFNNet{L,I},
     # Compute δ for the last layer
     #   δ^L = ∂E/∂(last.neurons)
     last = net.layers[L]  # Last layer
-    δ[L] = der(error)(last.neurons, target, last.activation)
+    δ[L] = der(error)(last, target, last.activation)
 
     # Find δ of previous layers, backwards
     for l in (L-1):-1:1

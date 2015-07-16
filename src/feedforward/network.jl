@@ -145,3 +145,15 @@ function train!{L,I}(net::FFNNet{L,I},
         end
     end
 end
+
+function networkerror(net::FFNNet{L,I},
+                      inputs::Vector{Vector{Float64}},
+                      outputs::Vector{Vector{Float64}};
+                      error::Function = quaderror)
+
+    total_error = 0
+    for ex in eachindex(inputs)
+        total_error += error(propagate!(net, inputs[ex]), outputs[ex])
+    end
+    return total_error
+end

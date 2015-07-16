@@ -106,11 +106,11 @@ function backpropagate{L,I}(net::FFNNet{L,I},
 
     # Find δ of previous layers, backwards
     for l in (L-1):-1:1
-       layer = net.layers[l]        # current layer
-       upweights = net.weights[l+1] # w^(l+1)
+       layer = net.layers[l] # current layer
+       W = net.weights[l+1]  # W^(l+1)
 
        # δ^l = ϕ'(s^l) ⊙ W^(l+1)' δ^(l+1)
-       deltas[l] = activate(layer, der(layer.activation)) .* (upweights'deltas[l+1])
+       deltas[l] = activate(layer, der(layer.activation)) .* (W'deltas[l+1])
 
        # Remove δ^l corresponding to bias unit
        deltas[l] = deltas[l][2:end]

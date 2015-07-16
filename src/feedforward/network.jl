@@ -95,34 +95,33 @@ function backpropagate{L,I}(net::FFNNet{L,I},
                             output_ex::Vector{Float64},
                             error::Function)
     # Vector storing one delta vector for each layer
-    deltas = Array(Vector{Float64}, L)
-
-    # Last layer
-    last = net.layers[L]
+    δ = Array(Vector{Float64}, L)
 
     # Compute δ for the last layer
     #   δ^L = ∂E/∂(last.neurons)
-    deltas[L] = der(error)(last.neurons, output_ex, last.activation)
+    last = net.layers[L]  # Last layer
+    δ[L] = der(error)(last.neurons, output_ex, last.activation)
 
     # Find δ of previous layers, backwards
     for l in (L-1):-1:1
-       layer = net.layers[l] # current layer
+       layer = net.layers[l] # Current layer
        W = net.weights[l+1]  # W^(l+1)
 
        # δ^l = ϕ'(s^l) ⊙ W^(l+1)' δ^(l+1)
-       deltas[l] = activate(layer, der(layer.activation)) .* (W'deltas[l+1])
+       δ[l] = activate(layer, der(layer.activation)) .* (W'δ[l+1])
 
-       # Remove δ^l corresponding to bias unit
-       deltas[l] = deltas[l][2:end]
+       # If there is a bias unit, remove the first
+       # element of δ^l, that corresponds to it
+       layer.bias && deleteat!(δ[l], 1)
     end
 
-    return deltas
+    return δ
 end
 
 """
-`train!(net::FFNNet, inputs, outputs)`
+`train!(net::FFNNet, inputs, outputs, α, error)`
 
-Train the Neural Network with backpropagation using the examples provided.
+Train the Neural Network with backpropagation using the examples provided, learning rate `α` and the error function `error`.
 """
 function train!{L,I}(net::FFNNet{L,I},
                      inputs::Vector{Vector{Float64}},
@@ -131,21 +130,28 @@ function train!{L,I}(net::FFNNet{L,I},
                      error::Function = quaderror) # Error function
 
     for ex in eachindex(inputs)
-        input_ex = vcat([1.0], inputs[ex])       # Example's input with bias
-        output_ex = outputs[ex]                  # Example's output
+        input_ex   = vcat([1.0], inputs[ex])     # Example's input with bias
+        output_ex  = outputs[ex]                 # Example's output
         output_net = propagate!(net, inputs[ex]) # Network's output
 
         # Find the δs using the backpropagation of this example
         deltas = backpropagate(net, output_net, output_ex, error)
 
-        # Gradient Descent
-        net.weights[1] -= α * (deltas[1] ⊗ input_ex) # First layer
-        for l in 2:L                                 # Other layers
+        # Gradient Descent    First layer     α(δ^1 ⊗ input)
+        net.weights[1]     -= α * (deltas[1] ⊗ input_ex) #
+        for l in 2:L #        Other layers    α(δ^l ⊗ s^(l-1))
             net.weights[l] -= α * (deltas[l] ⊗ net.layers[l-1].neurons)
         end
     end
 end
 
+"""
+`sampleerror{L,I}(net::FFNNet{L,I},inputs::Vector{Vector{Float64}},
+   outputs::Vector{Vector{Float64}}; error::Function = quaderror)`
+
+Mean error of the network in this sample (consisting of `inputs` and `outputs`).
+The error is measured using `error` function.
+"""
 function sampleerror{L,I}(net::FFNNet{L,I},
                           inputs::Vector{Vector{Float64}},
                           outputs::Vector{Vector{Float64}};
@@ -155,5 +161,5 @@ function sampleerror{L,I}(net::FFNNet{L,I},
     for ex in eachindex(inputs)
         total_error += error(propagate!(net, inputs[ex]), outputs[ex])
     end
-    return total_error
+    return total_error/length(inputs)
 end

@@ -13,8 +13,8 @@ derivatives = Dict{Function, Function}()
 der(f::Function) = derivatives[f]
 
 include("activation.jl")
-include("error.jl")
 include("feedforward/layer.jl")
+include("error.jl")
 include("feedforward/network.jl")
 
 end # module NeuralNetsLite

@@ -40,7 +40,7 @@ end
 ############################
 length{N}(l::FFNNLayer{N}) = N
 size{N}(l::FFNNLayer{N})   = N
-endof{N}(l::FFNNLayer{N}) = N
+endof{N}(l::FFNNLayer{N})  = N
 
 function show{N}(io::IO, l::FFNNLayer{N})
     print(io, "Feedforward Neural Net Layer: ", N, " neurons")

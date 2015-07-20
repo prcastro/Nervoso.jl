@@ -3,13 +3,13 @@ export FFNNet
 """
 `type FFNNet{N,I}`
 
-Type representing a Neural Network with `N` layers with input size `I`.
+Type representing a Neural Network with `L` layers with input size `I`.
 
 ### Fields
 * `layers` (Vector{FFNNLayer}): Vector containing each layer of the network
 * `weights` (Vector{Matrix{Float64}}): Vector containing the weight matrices between layers
 """
-type FFNNet{N,I}
+type FFNNet{L,I}
     layers::Vector{FFNNLayer}
     weights::Vector{Matrix{Float64}}
 end
@@ -130,7 +130,7 @@ function train!{L,I}(net::FFNNet{L,I},
                      error::Function = quaderror) # Error function
 
     # TODO: Implement momentum
-    for ex in eachindex(inputs)
+    for ex in randperm(length(inputs))
         input_ex   = vcat([1.0], inputs[ex])     # Example's input with bias
         output_ex  = outputs[ex]                 # Example's output
         output_net = propagate!(net, inputs[ex]) # Network's output
@@ -138,10 +138,11 @@ function train!{L,I}(net::FFNNet{L,I},
         # Find the δs using the backpropagation of this example
         deltas = backpropagate(net, output_net, output_ex, error)
 
-        # Gradient Descent    First layer     α(δ^1 ⊗ input)
-        net.weights[1]     -= α * (deltas[1] ⊗ input_ex) #
-        for l in 2:L #        Other layers    α(δ^l ⊗ s^(l-1))
-            net.weights[l] -= α * (deltas[l] ⊗ net.layers[l-1].neurons)
+        # Gradient Descent   W^(L) = W^(L) - α∇E
+        #                     First layer     ∇E = δ^1 ⊗ input
+        net.weights[1]     -= α * (deltas[1] ⊗ input_ex)
+        for l in 2:L #        Other layers    ∇E = δ^l ⊗ x^(l-1)
+            net.weights[l] -= α * (deltas[l] ⊗ activate(net.layers[l-1]))
         end
     end
 end

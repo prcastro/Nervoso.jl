@@ -4,7 +4,7 @@ import Base: show, length, size, endof, getindex, setindex!, start, next, done
 export activate, update!, propagate!, train!, sampleerror
 
 "Outer product"
-⊗(a,b) = a*b'
+⊗(a::Vector{Float64},b::Vector{Float64}) = a*b'
 
 "Dictionary associating functions with their derivatives"
 derivatives = Dict{Function, Function}()

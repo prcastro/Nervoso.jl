@@ -1,7 +1,7 @@
 module NeuralNetsLite
 
 import Base: show, length, size, endof, getindex, setindex!, start, next, done
-export activate, update!, propagate!, train!, sampleerror
+export activate, update!, propagate!, train!, sampleerror, classerror
 
 "Outer product"
 ⊗(a::Vector{Float64},b::Vector{Float64}) = a*b'

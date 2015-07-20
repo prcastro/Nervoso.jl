@@ -176,3 +176,13 @@ function sampleerror{L,I}(net::FFNNet{L,I},
     end
     return total_error/length(inputs)
 end
+
+"""
+`classerror{L,I}(net::FFNNet{L,I},inputs,outputs)`
+
+Classification error of the network in this sample (consisting of `inputs` and
+`outputs`).
+The error is measured counting the ammount of misclassified inputs.
+"""
+classerror{L,I}(net::FFNNet{L,I},inputs,outputs) =
+    sum([ indmax(outputs[i]) != indmax(propagate!(net, inputs[i])) for i in size(inputs) ])

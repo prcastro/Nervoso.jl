@@ -126,14 +126,16 @@ Train the Neural Network with backpropagation using the examples provided, learn
 function train!{L,I}(net::FFNNet{L,I},
                      inputs::Vector{Vector{Float64}},
                      outputs::Vector{Vector{Float64}};
-                     α::Real = 0.5,              # Learning rate
-                     η::Real = 0.1,              # Momentum rate
+                     α::Real = 0.5,               # Learning rate
+                     η::Real = 0.1,               # Momentum rate
+                     epochs::Int = 1,
                      error::Function = quaderror) # Error function
 
     # Initialize gradient matrices
     grad      = Matrix{Float64}[zeros(i) for i in net.weights]
     last_grad = Matrix{Float64}[zeros(i) for i in net.weights]
 
+    for τ in 1:epochs
     for ex in randperm(length(inputs)) # Select training order randomly
         input_ex   = vcat([1.0], inputs[ex])     # Example's input with bias
         output_ex  = outputs[ex]                 # Example's output
@@ -155,6 +157,7 @@ function train!{L,I}(net::FFNNet{L,I},
 
         # Save last gradients
         last_grad = grad
+    end
     end
 end
 

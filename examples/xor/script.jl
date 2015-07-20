@@ -9,8 +9,7 @@ net = FFNNet(2, 2, 1)
 println("In-Sample Error before training: ", sampleerror(net, ins, outs))
 
 # Let's train out network 500 times using our examples
-for i in 1:500
-    train!(net, ins, outs, α=0.5, η=0.1) end
+train!(net, ins, outs, α=0.5, η=0.1, epochs=500)
 
 # Now we compare our new in-sample error
 println("In-Sample Error after training: ", sampleerror(net, ins, outs))

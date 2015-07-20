@@ -67,15 +67,6 @@ next(l::FFNNLayer, s) = (l[s], s+1)
 ############################
 #      OTHER FUNCTIONS     #
 ############################
-
-function activate(l::FFNNLayer, activation::Function)
-    if l.bias
-        return vcat([1.0], activation(l[1:end]))
-    else
-        return activation(l[1:end])
-    end
-end
-
-activate(l::FFNNLayer) = activate(l, l.activation)
+activate(l::FFNNLayer) = l.activation(l)
 
 update!(l::FFNNLayer, x::Vector{Float64}) = l[1:end] = x

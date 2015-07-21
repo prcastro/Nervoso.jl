@@ -131,6 +131,8 @@ The output will be the number of misclassified point of the dataset.
 
 This works by taking the index of the maximum value of the output of the network, and comparing to the index of the maximum value of the example's output. Therefore, it's natural to use `softmax` activation on the last layer and *one-hot* encoding on the examples' outputs, but it's not mandatory.
 
+It's also easy to define new functions to assess the error committed by the network on a dataset.
+
 ## Extending this library
 
 Users can define new cost and activation functions, given that they preserve the expected interface of these kinds of functions.
@@ -159,4 +161,22 @@ derivatives[newcost] = newcostprime
 
 ### New activation function
 
-TODO
+To define a new activation function, you should define a function with the following signature:
+
+```julia
+function newactivation(l::FFNNLayer)
+```
+
+This function must return a variable of type `Vector{Float64}` containing the activation of each neuron. Alongside this function you must define a function that differentiate the activation of a layer  with respect to its neurons, like this:
+
+```julia
+function newactivationprime(l::FFNNLayer)
+```
+
+This function must return the Jacobian Matrix of the activation of the layer with respect to the neurons of the layer. Check the conceptual PDF more details.
+
+After defining both these functions, you must add `newactivation` and `newactivationprime` to the derivatives dictionary:
+
+```julia
+derivatives[newactivation] = newactivationprime
+```

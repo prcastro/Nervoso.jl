@@ -6,7 +6,7 @@
 
 This package provides a simple implementation of Feedforward Neural Networks.
 
-The main purpose of this package isn't provide a fast implementation of the algorithms, but rather a general and extensible one, alongside an easy-to-read code.
+The main purpose of this package isn't to provide a fast implementation of the algorithms, but rather a general and extensible one, alongside an easy-to-read code.
 
 ## Installation
 
@@ -67,7 +67,7 @@ Each element of `inputs` is a `Vector{Float64}`, and we specified this with the 
 
 ### Creating the network
 
-Suppose your dataset consists of inputs of size 3, and outputs of size 2 (just as in the example before). You can create a Neural Network compatible with this dataset typing:
+Suppose your dataset consists of inputs of size 3, and outputs of size 2 (just as in the example before). You can create a Neural Network compatible with this dataset by typing:
 
 ```julia
 # Create a network with input size equal to 3
@@ -89,7 +89,9 @@ By default, all layers have `tanh` as it's activation function. To change this, 
 julia> net.layers[end].activation = softmax
 ```
 
-Notice that you can access the network's layers by indexing the vector `net.layers`. This is the vector of layers of this network and each of it's elements is of the type `FFNNLayer`. A variable of type `FFNNLayer` has a field called `activation`, that specifies the activation function associated with that layer. To change the activation of a layer, we simply change that field.
+Notice that you can access the network's layers by indexing the vector `net.layers`. This is the vector of layers of this network and each of it's elements is of the type `FFNNLayer`. 
+
+A variable of type `FFNNLayer` has a field called `activation`, that specifies the activation function associated with that layer. To change the activation of a layer, we simply change that field.
 
 ### Making a prediction
 
@@ -99,7 +101,7 @@ While this network isn't trained yet, we already can try to make it predict the 
 propagate!(net, [1.0, 2.0, 1.0])
 ```
 
-Since the network isn't trained yet, the output will be a 2-element vector containing gibberish.
+Since the network is initialized with random weights, the output in this case will be a 2-element vector containing gibberish.
 
 ### Training the network
 
@@ -109,17 +111,17 @@ We can train our network using the dataset we specified earlier:
 train!(net, inputs, outputs)
 ```
 
-If you need to specify things like the learning rate, momentum rate, batch size and number of epochs, you should check the documentation of the function `train!`.
+If you need to specify things like the learning rate, momentum rate, number of epochs and batch size, you should check the documentation of the function `train!`.
 
 ### Checking the network's performance
 
-We can calculate the mean error committed by the network using the `meanerror` function:
+We can calculate the mean error committed by the network using the `sampleerror` function:
 
 ```julia
-meanerror(net, inputs, outputs)
+sampleerror(net, inputs, outputs)
 ```
 
-If you are trying to compute the classification error of the network, you can use:
+If you are trying to compute the classification error of the network instead, you can use:
 
 ```julia
 classerror(net, inputs, outputs)

@@ -73,7 +73,7 @@ end
 """
 `propagate!(net::FFNNet{N,I}, x::Vector{Float64})`
 
-Propagate an input `x` through the network `net` and return the activation of the last layer
+Propagate an input `x` through the network `net` and return the output
 """
 function propagate!{N,I}(net::FFNNet{N,I}, x::Vector{Float64})
     @assert length(x) == I "Network does not support input size $length(x), only $I"
@@ -129,9 +129,26 @@ function backpropagate{L,I}(net::FFNNet{L,I},
 end
 
 """
-`train!(net::FFNNet, inputs, outputs, α, η, epochs, cost)`
+`train!{L,I}(net::FFNNet{L,I},
+             inputs::Vector{Vector{Float64}},
+             outputs::Vector{Vector{Float64}};
+             α::Real = 0.5,
+             η::Real = 0.1,
+             epochs::Int = 1,
+             batchsize::Int = 1,
+             cost::Function = quaderror)`
 
-Train the Neural Network with backpropagation using the examples provided, learning rate `α` and the cost function `cost`.
+Train the Neural Network using the examples provided in `inputs` and `outputs`.
+
+### Arguments
+* `net`: Feed Forward Neural Network to be trained [FFNNet{L,I}]
+* `inputs`: Vector containing input examples (each one is a vector) [Vector of Vector{Float64} with K elements]
+* `outputs`: Vector containing input examples (each one is a vector) [Vector of Vector{Float64} with K elements]
+* `α`: Learning Rate [Real = 0.5]
+* `η`: Momentum Rate [Real = 0.1]
+* `epochs`: Number of iterations of the learning algorithm on this dataset [Int = 1]
+* `batchsize`: Size of the batch used by the algorithm (1 is simply the default stochastic gradient descent) [Int = 1]
+* `cost`: Cost function to be minimized by the learning algorithm [Function = quaderror]
 """
 function train!{L,I}(net::FFNNet{L,I},
                      inputs::Vector{Vector{Float64}},
@@ -139,7 +156,7 @@ function train!{L,I}(net::FFNNet{L,I},
                      α::Real = 0.5,               # Learning rate
                      η::Real = 0.1,               # Momentum rate
                      epochs::Int = 1,             # Iterations through entire data
-                     batchsize::Int = 1,              # Number of examples on each iteration
+                     batchsize::Int = 1,          # Number of examples on each iteration
                      cost::Function = quaderror)  # Cost function
 
     # Initialize gradient matrices

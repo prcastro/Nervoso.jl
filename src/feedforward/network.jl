@@ -160,12 +160,12 @@ function train!{L,I}(net::FFNNet{L,I},
                 output_net = propagate!(net, inputs[ex]) # Network's output
 
                 # Find the δs using the backpropagation of this example
-                deltas = backpropagate(net, output_net, output_ex, cost)
+                δ = backpropagate(net, output_net, output_ex, cost)
 
                 # Find gradients
-                grad[1] += deltas[1] ⊗ input_ex # First layer     ∇E = δ^1 ⊗ input
-                for l in 2:L                    # Other layers    ∇E = δ^l ⊗ x^(l-1)
-                    grad[l] += deltas[l] ⊗ activate(net.layers[l-1])
+                grad[1] += δ[1] ⊗ input_ex # First layer     ∇E = δ^1 ⊗ input
+                for l in 2:L               # Other layers    ∇E = δ^l ⊗ x^(l-1)
+                    grad[l] += δ[l] ⊗ activate(net.layers[l-1])
                 end
             end
 
@@ -176,7 +176,7 @@ function train!{L,I}(net::FFNNet{L,I},
             # Save last gradients
             last_grad = grad
 
-            # Reset gradient component for the new batch
+            # Reset gradient component for the next batch
             grad[:] = 0.0
         end
     end

@@ -1,3 +1,5 @@
+export derivatives
+
 "Outer product"
 ⊗(a::Vector{Float64},b::Vector{Float64}) = a*b'
 

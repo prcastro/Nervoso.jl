@@ -1,3 +1,5 @@
+export meanerror, classerror
+
 """
 `meanerror{L,I}(net::FFNNet{L,I},inputs::Vector{Vector{Float64}},
    outputs::Vector{Vector{Float64}}; error::Function = quaderror)`

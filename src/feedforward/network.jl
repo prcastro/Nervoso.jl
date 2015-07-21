@@ -1,4 +1,4 @@
-export FFNNet
+export FFNNet, propagate!, train!
 
 """
 `type FFNNet{N,I}`
@@ -149,7 +149,7 @@ function train!{L,I}(net::FFNNet{L,I},
     for τ in 1:epochs
         # Select training order randomly
         perm = randperm(length(inputs))
-        
+
         # Create batches of the correct size
         batches = constructbatches(perm, batchsize)
         for batch in batches

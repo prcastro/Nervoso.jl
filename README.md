@@ -89,7 +89,7 @@ By default, all layers have `tanh` as it's activation function. To change this, 
 julia> net.layers[end].activation = softmax
 ```
 
-Notice that you can access the network's layers by indexing the vector `net.layers`. This is the vector of layers of this network and each of it's elements is of the type `FFNNLayer`. 
+Notice that you can access the network's layers by indexing the vector `net.layers`. This is the vector of layers of this network and each of it's elements is of the type `FFNNLayer`.
 
 A variable of type `FFNNLayer` has a field called `activation`, that specifies the activation function associated with that layer. To change the activation of a layer, we simply change that field.
 
@@ -130,3 +130,33 @@ classerror(net, inputs, outputs)
 The output will be the number of misclassified point of the dataset.
 
 This works by taking the index of the maximum value of the output of the network, and comparing to the index of the maximum value of the example's output. Therefore, it's natural to use `softmax` activation on the last layer and *one-hot* encoding on the examples' outputs, but it's not mandatory.
+
+## Extending this library
+
+Users can define new cost and activation functions, given that they preserve the expected interface of these kinds of functions.
+
+### New cost function
+
+To **define a new cost function**, you should define a function with the following signature:
+
+```julia
+function newcost(output::Vector{Real}, target::Vector{Real})
+```
+
+This function **must return a cost of type `Float64`**. Alongside this function you must **define it's gradient with respect to the output vector**, like this:
+
+```julia
+function newcostprime(output::Vector{Real}, target::Vector{Real})
+```
+
+This function **must return a `Vector{Float64}` with the derivatives of the error with respect to each of the `output`'s coordinates**. Check the conceptual PDF more details.
+
+After defining both these functions, you must **add `newcost` and `newcostprime` to the derivatives dictionary**:
+
+```julia
+derivatives[newcost] = newcostprime
+```
+
+### New activation function
+
+TODO

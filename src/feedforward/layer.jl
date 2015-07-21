@@ -1,4 +1,4 @@
-export FFNNLayer
+export FFNNLayer, activate, update!
 
 """
 `type FFNNLayer{N}`

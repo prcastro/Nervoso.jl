@@ -90,6 +90,16 @@ function propagate!{N,I}(net::FFNNet{N,I}, x::Vector{Float64})
     return activate(net.layers[end])
 end
 
+function constructbatches(perm, batchsize)
+    batches = Vector{Int}[]
+    while length(perm) > 0
+        # Size of this batch
+        sizebatch = min(length(perm), batchsize)
+        push!(batches, splice!(perm, 1:sizebatch))
+    end
+    return batches
+end
+
 function backpropagate{L,I}(net::FFNNet{L,I},
                             output::Vector{Float64},
                             target::Vector{Float64},
@@ -129,31 +139,29 @@ function train!{L,I}(net::FFNNet{L,I},
                      α::Real = 0.5,               # Learning rate
                      η::Real = 0.1,               # Momentum rate
                      epochs::Int = 1,             # Iterations through entire data
-                     batch::Int = 1,              # Number of examples on each iteration
+                     batchsize::Int = 1,              # Number of examples on each iteration
                      cost::Function = quaderror)  # Cost function
 
     # Initialize gradient matrices
     grad      = Matrix{Float64}[zeros(i) for i in net.weights]
     last_grad = Matrix{Float64}[zeros(i) for i in net.weights]
-    block     = Vector{Int64}(zeros(batch))
 
-    iter = div(length(inputs), batch)  # Number of iterations given `batch`
-    # Permutating the input indexes on blocks of size `batch`
-    perm = reshape(randperm(length(inputs)), iter, batch)
+    # Select training order randomly
+    perm = randperm(length(inputs))
 
-    # # Select training order randomly
+    # Create batches of the correct size
+    batches = constructbatches(perm, batchsize)
+
     for τ in 1:epochs
-    for i in 1:iter
-
-        for ex in perm[i, :]
+    for batch in batches
+        # Compute the gradient using this entire batch
+        for ex in batch
             input_ex   = vcat([1.0], inputs[ex])     # Example's input with bias
             output_ex  = outputs[ex]                 # Example's output
             output_net = propagate!(net, inputs[ex]) # Network's output
 
             # Find the δs using the backpropagation of this example
             deltas = backpropagate(net, output_net, output_ex, cost)
-
-            # Momentum Gradient Descent  W^(L) = W^(L) - α∇E - η∇E
 
             # Find gradients
             grad[1] += deltas[1] ⊗ input_ex # First layer     ∇E = δ^1 ⊗ input
@@ -163,13 +171,14 @@ function train!{L,I}(net::FFNNet{L,I},
         end
 
         # Update Weights using Momentum Gradient Descent
-        net.weights -= α * grad + η * last_grad
+        #  W^(L) = W^(L) - α∇E - η∇E_old
+        net.weights -= α*grad + η*last_grad
 
         # Save last gradients
         last_grad = grad
 
         # Reset gradient component for the new batch
-        grad = Matrix{Float64}[zeros(i) for i in net.weights]
+        grad[:] = 0.0
     end
     end
 end

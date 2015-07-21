@@ -93,14 +93,14 @@ end
 function backpropagate{L,I}(net::FFNNet{L,I},
                             output::Vector{Float64},
                             target::Vector{Float64},
-                            error::Function)
+                            cost::Function)
     # Vector storing one delta vector for each layer
     δ = Array(Vector{Float64}, L)
 
     # Compute δ for the last layer
     #   δ^L = ∂E/∂(last.neurons)
     last = net.layers[L]  # Last layer
-    δ[L] = (der(last.activation)(last))' * der(error)(output, target)
+    δ[L] = (der(last.activation)(last))' * der(cost)(output, target)
 
     # Find δ of previous layers, backwards
     for l in (L-1):-1:1
@@ -119,47 +119,37 @@ function backpropagate{L,I}(net::FFNNet{L,I},
 end
 
 """
-`train!(net::FFNNet, inputs, outputs, α, error)`
+`train!(net::FFNNet, inputs, outputs, α, η, epochs, cost)`
 
-Train the Neural Network with backpropagation using the examples provided, learning rate `α` and the error function `error`.
+Train the Neural Network with backpropagation using the examples provided, learning rate `α` and the cost function `cost`.
 """
 function train!{L,I}(net::FFNNet{L,I},
                      inputs::Vector{Vector{Float64}},
                      outputs::Vector{Vector{Float64}};
                      α::Real = 0.5,               # Learning rate
                      η::Real = 0.1,               # Momentum rate
-                     epochs::Int = 1,             # Iterations through entire data
-                     batch::Int = 1,              # Number of examples on each iteration
-                     error::Function = quaderror) # Error function
+                     epochs::Int = 1,
+                     cost::Function = quaderror) # Error function
 
     # Initialize gradient matrices
     grad      = Matrix{Float64}[zeros(i) for i in net.weights]
     last_grad = Matrix{Float64}[zeros(i) for i in net.weights]
-    block     = Vector{Int64}(zeros(batch))
 
-    iter = div(length(inputs), batch)  # Number of iterations given `batch`
-    # Permutating the input indexes on blocks of size `batch`
-    perm = reshape(randperm(length(inputs)), iter, batch)
-
-    # # Select training order randomly
     for τ in 1:epochs
-    for i in 1:iter
+    for ex in randperm(length(inputs)) # Select training order randomly
+        input_ex   = vcat([1.0], inputs[ex])     # Example's input with bias
+        output_ex  = outputs[ex]                 # Example's output
+        output_net = propagate!(net, inputs[ex]) # Network's output
 
-        for ex in perm[i, :]
-            input_ex   = vcat([1.0], inputs[ex])     # Example's input with bias
-            output_ex  = outputs[ex]                 # Example's output
-            output_net = propagate!(net, inputs[ex]) # Network's output
+        # Find the δs using the backpropagation of this example
+        deltas = backpropagate(net, output_net, output_ex, cost)
 
-            # Find the δs using the backpropagation of this example
-            deltas = backpropagate(net, output_net, output_ex, error)
+        # Momentum Gradient Descent  W^(L) = W^(L) - α∇E - η∇E
 
-            # Momentum Gradient Descent  W^(L) = W^(L) - α∇E - η∇E
-
-            # Find gradients
-            grad[1] += deltas[1] ⊗ input_ex # First layer     ∇E = δ^1 ⊗ input
-            for l in 2:L                    # Other layers    ∇E = δ^l ⊗ x^(l-1)
-                grad[l] += deltas[l] ⊗ activate(net.layers[l-1])
-            end
+        # Find gradients
+        grad[1] = deltas[1] ⊗ input_ex # First layer     ∇E = δ^1 ⊗ input
+        for l in 2:L                   # Other layers    ∇E = δ^l ⊗ x^(l-1)
+            grad[l] = deltas[l] ⊗ activate(net.layers[l-1])
         end
 
         # Update Weights using Momentum Gradient Descent
@@ -167,38 +157,6 @@ function train!{L,I}(net::FFNNet{L,I},
 
         # Save last gradients
         last_grad = grad
-
-        # Reset gradient component for the new batch
-        grad = Matrix{Float64}[zeros(i) for i in net.weights]
     end
     end
 end
-
-"""
-`sampleerror{L,I}(net::FFNNet{L,I},inputs::Vector{Vector{Float64}},
-   outputs::Vector{Vector{Float64}}; error::Function = quaderror)`
-
-Mean error of the network in this sample (consisting of `inputs` and `outputs`).
-The error is measured using `error` function.
-"""
-function sampleerror{L,I}(net::FFNNet{L,I},
-                          inputs::Vector{Vector{Float64}},
-                          outputs::Vector{Vector{Float64}};
-                          error::Function = quaderror)
-
-    total_error = 0.0
-    for ex in eachindex(inputs)
-        total_error += error(propagate!(net, inputs[ex]), outputs[ex])
-    end
-    return total_error/length(inputs)
-end
-
-"""
-`classerror{L,I}(net::FFNNet{L,I},inputs,outputs)`
-
-Classification error of the network in this sample (consisting of `inputs` and
-`outputs`).
-The error is measured counting the ammount of misclassified inputs.
-"""
-classerror{L,I}(net::FFNNet{L,I},inputs,outputs) =
-    sum([indmax(outputs[i]) != indmax(propagate!(net, inputs[i])) for i in 1:length(inputs)])

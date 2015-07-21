@@ -1,3 +1,5 @@
+# Cost functions
+
 #============================#
 #      QUADRATIC ERROR       #
 #============================#
@@ -10,16 +12,3 @@ quaderrorprime(output, target) = (output - target)
 
 # Insert quaderrorprime into derivatives dictionary
 derivatives[quaderror] = quaderrorprime
-
-#============================#
-#    CROSS-ENTROPY ERROR     #
-#============================#
-
-"Cross-entropy error between the output of the network and a target"
-ceerror(output, target) = -output'log(target)
-
-"Derivative of the cross-entropy error with respect to the outputs"
-ceerrorprime(output, target) = -target ./ output
-
-# Insert quaderrorprime into derivatives dictionary
-derivatives[ceerror] = ceerrorprime

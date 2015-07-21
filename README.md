@@ -115,10 +115,10 @@ If you need to specify things like the learning rate, momentum rate, number of e
 
 ### Checking the network's performance
 
-We can calculate the mean error committed by the network using the `sampleerror` function:
+We can calculate the mean error committed by the network using the `meanerror` function:
 
 ```julia
-sampleerror(net, inputs, outputs)
+meanerror(net, inputs, outputs)
 ```
 
 If you are trying to compute the classification error of the network instead, you can use:
@@ -137,21 +137,21 @@ Users can define new cost and activation functions, given that they preserve the
 
 ### New cost function
 
-To **define a new cost function**, you should define a function with the following signature:
+To define a new cost function, you should define a function with the following signature:
 
 ```julia
 function newcost(output::Vector{Real}, target::Vector{Real})
 ```
 
-This function **must return a cost of type `Float64`**. Alongside this function you must **define it's gradient with respect to the output vector**, like this:
+This function must return a cost of type `Float64`. Alongside this function you must define it's gradient with respect to the output vector, like this:
 
 ```julia
 function newcostprime(output::Vector{Real}, target::Vector{Real})
 ```
 
-This function **must return a `Vector{Float64}` with the derivatives of the error with respect to each of the `output`'s coordinates**. Check the conceptual PDF more details.
+This function must return a `Vector{Float64}` with the derivatives of the error with respect to each of the `output`'s coordinates. Check the conceptual PDF more details.
 
-After defining both these functions, you must **add `newcost` and `newcostprime` to the derivatives dictionary**:
+After defining both these functions, you must add `newcost` and `newcostprime` to the derivatives dictionary:
 
 ```julia
 derivatives[newcost] = newcostprime

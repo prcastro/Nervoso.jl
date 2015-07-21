@@ -1,7 +1,7 @@
 # activation functions must be applied to vectors
 #  and return a vector, as well as their derivatives
 
-export σ
+export softmax
 
 #============================#
 #            TANH            #

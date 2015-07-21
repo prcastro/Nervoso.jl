@@ -128,28 +128,38 @@ function train!{L,I}(net::FFNNet{L,I},
                      outputs::Vector{Vector{Float64}};
                      α::Real = 0.5,               # Learning rate
                      η::Real = 0.1,               # Momentum rate
-                     epochs::Int = 1,
-                     cost::Function = quaderror) # Error function
+                     epochs::Int = 1,             # Iterations through entire data
+                     batch::Int = 1,              # Number of examples on each iteration
+                     cost::Function = quaderror)  # Cost function
 
     # Initialize gradient matrices
     grad      = Matrix{Float64}[zeros(i) for i in net.weights]
     last_grad = Matrix{Float64}[zeros(i) for i in net.weights]
+    block     = Vector{Int64}(zeros(batch))
 
+    iter = div(length(inputs), batch)  # Number of iterations given `batch`
+    # Permutating the input indexes on blocks of size `batch`
+    perm = reshape(randperm(length(inputs)), iter, batch)
+
+    # # Select training order randomly
     for τ in 1:epochs
-    for ex in randperm(length(inputs)) # Select training order randomly
-        input_ex   = vcat([1.0], inputs[ex])     # Example's input with bias
-        output_ex  = outputs[ex]                 # Example's output
-        output_net = propagate!(net, inputs[ex]) # Network's output
+    for i in 1:iter
 
-        # Find the δs using the backpropagation of this example
-        deltas = backpropagate(net, output_net, output_ex, cost)
+        for ex in perm[i, :]
+            input_ex   = vcat([1.0], inputs[ex])     # Example's input with bias
+            output_ex  = outputs[ex]                 # Example's output
+            output_net = propagate!(net, inputs[ex]) # Network's output
 
-        # Momentum Gradient Descent  W^(L) = W^(L) - α∇E - η∇E
+            # Find the δs using the backpropagation of this example
+            deltas = backpropagate(net, output_net, output_ex, cost)
 
-        # Find gradients
-        grad[1] = deltas[1] ⊗ input_ex # First layer     ∇E = δ^1 ⊗ input
-        for l in 2:L                   # Other layers    ∇E = δ^l ⊗ x^(l-1)
-            grad[l] = deltas[l] ⊗ activate(net.layers[l-1])
+            # Momentum Gradient Descent  W^(L) = W^(L) - α∇E - η∇E
+
+            # Find gradients
+            grad[1] += deltas[1] ⊗ input_ex # First layer     ∇E = δ^1 ⊗ input
+            for l in 2:L                    # Other layers    ∇E = δ^l ⊗ x^(l-1)
+                grad[l] += deltas[l] ⊗ activate(net.layers[l-1])
+            end
         end
 
         # Update Weights using Momentum Gradient Descent
@@ -157,6 +167,9 @@ function train!{L,I}(net::FFNNet{L,I},
 
         # Save last gradients
         last_grad = grad
+
+        # Reset gradient component for the new batch
+        grad = Matrix{Float64}[zeros(i) for i in net.weights]
     end
     end
 end

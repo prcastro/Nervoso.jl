@@ -10,5 +10,6 @@ include("feedforward/layer.jl")
 include("activation.jl")
 include("cost.jl")
 include("feedforward/network.jl")
+include("performance.jl")
 
 end # module NeuralNetsLite

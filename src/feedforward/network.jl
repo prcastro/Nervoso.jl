@@ -186,15 +186,15 @@ function train!{L,I}(net::FFNNet{L,I},
                 end
             end
 
-            # Update Weights using Momentum Gradient Descent
-            #  W^(L) = W^(L) - α∇E - η∇E_old
-            net.weights -= α*grad + η*last_grad
-
-            # Save last gradients
-            last_grad = grad
-
-            # Reset gradient component for the next batch
-            grad[:] = 0.0
+            for i in 1:L
+                # Update Weights using Momentum Gradient Descent
+                #  W^(L) = W^(L) - α∇E - η∇E_old
+                net.weights[i] -= α*grad[i] + η*last_grad[i]
+                # Save last gradients
+                last_grad[i][:] = grad[i][:]
+                # Reset gradient component for the next batch
+                grad[i][:] = 0.0
+            end
         end
     end
 end

@@ -146,39 +146,38 @@ function train!{L,I}(net::FFNNet{L,I},
     grad      = Matrix{Float64}[zeros(i) for i in net.weights]
     last_grad = Matrix{Float64}[zeros(i) for i in net.weights]
 
-    # Select training order randomly
-    perm = randperm(length(inputs))
-
-    # Create batches of the correct size
-    batches = constructbatches(perm, batchsize)
-
     for τ in 1:epochs
-    for batch in batches
-        # Compute the gradient using this entire batch
-        for ex in batch
-            input_ex   = vcat([1.0], inputs[ex])     # Example's input with bias
-            output_ex  = outputs[ex]                 # Example's output
-            output_net = propagate!(net, inputs[ex]) # Network's output
+        # Select training order randomly
+        perm = randperm(length(inputs))
+        
+        # Create batches of the correct size
+        batches = constructbatches(perm, batchsize)
+        for batch in batches
+            # Compute the gradient using this entire batch
+            for ex in batch
+                input_ex   = vcat([1.0], inputs[ex])     # Example's input with bias
+                output_ex  = outputs[ex]                 # Example's output
+                output_net = propagate!(net, inputs[ex]) # Network's output
 
-            # Find the δs using the backpropagation of this example
-            deltas = backpropagate(net, output_net, output_ex, cost)
+                # Find the δs using the backpropagation of this example
+                deltas = backpropagate(net, output_net, output_ex, cost)
 
-            # Find gradients
-            grad[1] += deltas[1] ⊗ input_ex # First layer     ∇E = δ^1 ⊗ input
-            for l in 2:L                    # Other layers    ∇E = δ^l ⊗ x^(l-1)
-                grad[l] += deltas[l] ⊗ activate(net.layers[l-1])
+                # Find gradients
+                grad[1] += deltas[1] ⊗ input_ex # First layer     ∇E = δ^1 ⊗ input
+                for l in 2:L                    # Other layers    ∇E = δ^l ⊗ x^(l-1)
+                    grad[l] += deltas[l] ⊗ activate(net.layers[l-1])
+                end
             end
+
+            # Update Weights using Momentum Gradient Descent
+            #  W^(L) = W^(L) - α∇E - η∇E_old
+            net.weights -= α*grad + η*last_grad
+
+            # Save last gradients
+            last_grad = grad
+
+            # Reset gradient component for the new batch
+            grad[:] = 0.0
         end
-
-        # Update Weights using Momentum Gradient Descent
-        #  W^(L) = W^(L) - α∇E - η∇E_old
-        net.weights -= α*grad + η*last_grad
-
-        # Save last gradients
-        last_grad = grad
-
-        # Reset gradient component for the new batch
-        grad[:] = 0.0
-    end
     end
 end

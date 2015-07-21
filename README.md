@@ -113,10 +113,10 @@ If you need to specify things like the learning rate, momentum rate, batch size 
 
 ### Checking the network's performance
 
-We can calculate the mean error committed by the network using the `sampleerror` function:
+We can calculate the mean error committed by the network using the `meanerror` function:
 
 ```julia
-sampleerror(net, inputs, outputs)
+meanerror(net, inputs, outputs)
 ```
 
 If you are trying to compute the classification error of the network, you can use:

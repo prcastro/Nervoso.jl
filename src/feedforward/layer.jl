@@ -6,9 +6,9 @@ export FFNNLayer, activate, update!
 Type representing a Neural Network 1-D layer with `N` neurons and, eventually, a bias unit.
 
 ### Fields
-* `neurons` (Vector{Float64}): Vector with each neuron and, if `bias = true`, a bias unit (index 1)
-* `activation` (Function): Activation function
-* `bias` (Bool): True if there is a bias unit in this layer
+* `neurons` (`Vector{Float64}`): Vector with each neuron and, if `bias = true`, a bias unit (index 1)
+* `activation` (`Function`): Activation function
+* `bias` (`Bool`): True if there is a bias unit in this layer
 """
 type FFNNLayer{N}
     neurons::Vector{Float64}
@@ -19,6 +19,18 @@ end
 #############################
 #        CONSTRUCTORS       #
 #############################
+
+"""
+`FFNNLayer(n::Integer; bias::Bool = true)`
+
+Construct a 1-D layer of a Neural Network with `n` neurons and, eventually, a bias unit. The layer has `tanh` as activation function
+
+### Arguments
+* `n` (`Int`): Number of neurons in this layer (not counting the eventual bias unit)
+
+### Keyword Arguments
+* `bias` (`Bool`, `true` by default): True if there is a bias unit in this layer
+"""
 function FFNNLayer(n::Integer; bias::Bool = true)
     if bias
         return FFNNLayer{n}(vcat([1.0], zeros(n)), tanh, bias)
@@ -27,6 +39,18 @@ function FFNNLayer(n::Integer; bias::Bool = true)
     end
 end
 
+"""
+`FFNNLayer(n::Integer; bias::Bool = true)`
+
+Construct a 1-D layer of a Neural Network with `n` neurons, `f` as activation function and, eventually, a bias unit.
+
+### Arguments
+* `n` (`Int`): Number of neurons in this layer (not counting the eventual bias unit)
+* `f` (`Function`): Activation function of this layer
+
+### Keyword Arguments
+* `bias` (`Bool`, `true` by default): True if there is a bias unit in this layer
+"""
 function FFNNLayer(n::Integer, f::Function; bias::Bool = true)
     if bias
         return FFNNLayer{n}(vcat([1.0], zeros(n)), f, bias)
@@ -67,6 +91,8 @@ next(l::FFNNLayer, s) = (l[s], s+1)
 ############################
 #      OTHER FUNCTIONS     #
 ############################
+"Activation of a Neural Network layer"
 activate(l::FFNNLayer) = l.activation(l)
 
+"Update the internal values of the neurons of a layer "
 update!(l::FFNNLayer, x::Vector{Float64}) = l[1:end] = x

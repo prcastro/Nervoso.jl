@@ -6,8 +6,8 @@ export FFNNet, propagate!, train!
 Type representing a Neural Network with `L` layers with input size `I`.
 
 ### Fields
-* `layers` (Vector{FFNNLayer}): Vector containing each layer of the network
-* `weights` (Vector{Matrix{Float64}}): Vector containing the weight matrices between layers
+* `layers` (`Vector{FFNNLayer}`): Vector containing each layer of the network
+* `weights` (`Vector{Matrix{Float64}}`): Vector containing the weight matrices between layers
 """
 type FFNNet{L,I}
     layers::Vector{FFNNLayer}
@@ -17,8 +17,19 @@ end
 #############################
 #        CONSTRUCTORS       #
 #############################
+"""
+`FFNNet(sizes::Int...)`
+
+Construct a network given the input size and the sizes of each layer. By default, the hidden layers have an bias unit and the output layer don't. One the other hand, all the layers have `tanh` as activation function by default.
+
+### Arguments
+* `sizes` (`Int...`): Integers specifying the sizes for the network. The first is the input size and the rest is the size of each network layer, from the first one up to the size of the output layer.
+
+### Returns
+A Neural Network (`FFNNet{N,I}`)
+"""
 function FFNNet(sizes::Int...)
-    @assert length(sizes) >= 3 "Network must have 3 or more layers"
+    @assert length(sizes) >= 3 "Network must have at least one hidden layer"
 
     # Create an Array of Neural Network Layers of the right sizes
     # The first size corresponds to the input size of the network
@@ -31,6 +42,21 @@ function FFNNet(sizes::Int...)
     return FFNNet(layers, sizes[1])
 end
 
+#############################
+#        CONSTRUCTORS       #
+#############################
+"""
+`FFNNet(sizes::Int...)`
+
+Construct a network given its layers and its input size.
+
+### Arguments
+* `layers` (`Vector{FFNNLayer}`): A vector with all the layers of the network (in order, with the last one being the output layer).
+* `inputsize` (`Int`): Integer specifying the input size of the layer.
+
+### Returns
+A Neural Network (`FFNNet{N,I}`)
+"""
 function FFNNet(layers::Vector{FFNNLayer}, inputsize::Int)
     # Create a vector of weight matrices
     weights = Array(Matrix{Float64}, length(layers))
@@ -74,6 +100,13 @@ end
 `propagate!(net::FFNNet{N,I}, x::Vector{Float64})`
 
 Propagate an input `x` through the network `net` and return the output
+
+### Arguments
+* `net` (`FFNNet`): A neural network that will process the input and give the output
+* `x` (`Vector{Float64}`): The input vector. This must be of the same size as the input size of `net`.
+
+### Returns
+The output of the network (`Vector{Float64}`). This is simply the activation of the last layer of the network after forwardpropagating the input.
 """
 function propagate!{N,I}(net::FFNNet{N,I}, x::Vector{Float64})
     @assert length(x) == I "Network does not support input size $length(x), only $I"
@@ -141,14 +174,16 @@ end
 Train the Neural Network using the examples provided in `inputs` and `outputs`.
 
 ### Arguments
-* `net`: Feed Forward Neural Network to be trained [FFNNet{L,I}]
-* `inputs`: Vector containing input examples (each one is a vector) [Vector of Vector{Float64} with K elements]
-* `outputs`: Vector containing input examples (each one is a vector) [Vector of Vector{Float64} with K elements]
-* `α`: Learning Rate [Real = 0.5]
-* `η`: Momentum Rate [Real = 0.1]
-* `epochs`: Number of iterations of the learning algorithm on this dataset [Int = 1]
-* `batchsize`: Size of the batch used by the algorithm (1 is simply the default stochastic gradient descent) [Int = 1]
-* `cost`: Cost function to be minimized by the learning algorithm [Function = quaderror]
+* `net` (`FFNNet`): Feedforward Neural Network to be trained.
+* `inputs` (`Vector{Vector{Float64}}`): Vector containing input examples (each one is a vector). This have K elements, K being the number of examples in this dataset. Each input vector must have I elements, where I is the input size of `net`.
+* `outputs` (`Vector{Vector{Float64}}`): Vector containing input examples (each one is a vector). This must also have K elements, K being the number of examples in this dataset. Each output vector must have O elements, where O is the size of the output layer of `net`.
+
+### Keyword Arguments
+* `α` (`Real`, 0.5 by default): Learning Rate.
+* `η` (`Real`, 0.1 by default): Momentum Rate.
+* `epochs` (`Int`, 1 by default): Number of iterations of the learning algorithm on this dataset.
+* `batchsize` (`Int`, 1 by default): Size of the batch used by the algorithm (1 is simply the default stochastic gradient descent).
+* `cost` (`Function`, `quaderror` by default): Cost function to be minimized by the learning algorithm.
 """
 function train!{L,I}(net::FFNNet{L,I},
                      inputs::Vector{Vector{Float64}},

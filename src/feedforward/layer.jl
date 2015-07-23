@@ -1,7 +1,7 @@
 export FFNNLayer, activate, update!
 
 """
-`type FFNNLayer{N}`
+`type FFNNLayer`
 
 Type representing a Neural Network 1-D layer with `N` neurons and, eventually, a bias unit.
 
@@ -10,7 +10,7 @@ Type representing a Neural Network 1-D layer with `N` neurons and, eventually, a
 * `activation` (`Function`): Activation function
 * `bias` (`Bool`): True if there is a bias unit in this layer
 """
-type FFNNLayer{N}
+type FFNNLayer
     neurons::Vector{Float64}
     activation::Function
     bias::Bool
@@ -33,9 +33,9 @@ Construct a 1-D layer of a Neural Network with `n` neurons and, eventually, a bi
 """
 function FFNNLayer(n::Integer; bias::Bool = true)
     if bias
-        return FFNNLayer{n}(vcat([1.0], zeros(n)), tanh, bias)
+        return FFNNLayer(vcat([1.0], zeros(n)), tanh, bias)
     else
-        return FFNNLayer{n}(zeros(n), tanh, bias)
+        return FFNNLayer(zeros(n), tanh, bias)
     end
 end
 
@@ -53,20 +53,21 @@ Construct a 1-D layer of a Neural Network with `n` neurons, `f` as activation fu
 """
 function FFNNLayer(n::Integer, f::Function; bias::Bool = true)
     if bias
-        return FFNNLayer{n}(vcat([1.0], zeros(n)), f, bias)
+        return FFNNLayer(vcat([1.0], zeros(n)), f, bias)
     else
-        return FFNNLayer{n}(zeros(n), f, bias)
+        return FFNNLayer(zeros(n), f, bias)
     end
 end
 
 ############################
 #      BASIC FUNCTIONS     #
 ############################
-length{N}(l::FFNNLayer{N}) = N
-size{N}(l::FFNNLayer{N})   = N
-endof{N}(l::FFNNLayer{N})  = N
+length(l::FFNNLayer) = l.bias ? length(l.neurons)-1 : length(l.neurons)
+size(l::FFNNLayer)   = length(l)
+endof(l::FFNNLayer)  = length(l)
 
-function show{N}(io::IO, l::FFNNLayer{N})
+function show(io::IO, l::FFNNLayer)
+    N = length(l)
     print(io, "Feedforward Neural Net Layer: ", N, " neurons")
     if l.bias
         print(io, " + bias unit")
@@ -74,9 +75,9 @@ function show{N}(io::IO, l::FFNNLayer{N})
     print(io, ", ", string(l.activation))
 end
 
-getindex{N}(l::FFNNLayer{N}, i) = l.bias ? l.neurons[i+1] : l.neurons[i]
+getindex(l::FFNNLayer, i) = l.bias ? l.neurons[i+1] : l.neurons[i]
 
-function setindex!{N}(l::FFNNLayer{N}, x, i)
+function setindex!(l::FFNNLayer, x, i)
     if l.bias
         l.neurons[i+1] = x
     else
@@ -85,7 +86,7 @@ function setindex!{N}(l::FFNNLayer{N}, x, i)
 end
 
 start(l::FFNNLayer) = 1
-done{N}(l::FFNNLayer{N}, s) = s > N
+done(l::FFNNLayer, s) = s > length(l)
 next(l::FFNNLayer, s) = (l[s], s+1)
 
 ############################

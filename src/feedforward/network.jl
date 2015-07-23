@@ -1,17 +1,19 @@
-export FFNNet, propagate!, train!
+export FFNNet, propagate, train!
 
 """
-`type FFNNet{N,I}`
+`type FFNNet`
 
-Type representing a Neural Network with `L` layers with input size `I`.
+Type representing a Neural Network.
 
 ### Fields
 * `layers` (`Vector{FFNNLayer}`): Vector containing each layer of the network
 * `weights` (`Vector{Matrix{Float64}}`): Vector containing the weight matrices between layers
+* `inputsize` (`Int`): Input size accepted by this network
 """
-type FFNNet{L,I}
+type FFNNet
     layers::Vector{FFNNLayer}
     weights::Vector{Matrix{Float64}}
+    inputsize::Int
 end
 
 #############################
@@ -52,7 +54,7 @@ Construct a network given its layers and its input size.
 * `inputsize` (`Int`): Integer specifying the input size of the layer.
 
 ### Returns
-A Neural Network (`FFNNet{N,I}`)
+A Neural Network (`FFNNet`)
 """
 function FFNNet(layers::Vector{FFNNLayer}, inputsize::Int)
     # Create a vector of weight matrices
@@ -71,16 +73,18 @@ function FFNNet(layers::Vector{FFNNLayer}, inputsize::Int)
         weights[i] = rand(size(layers[i]), size(layers[i-1]) + 1)
     end
 
-    return FFNNet{length(layers), inputsize}(layers, weights)
+    return FFNNet(layers, weights, inputsize)
 end
 
 ############################
 #      BASIC FUNCTIONS     #
 ############################
-length{N,I}(net::FFNNet{N,I}) = N
+length(net::FFNNet) = length(net.layers)
+size(net::FFNNet) = (net.inputsize, length(net.layers))
 
-function show{N,I}(io::IO, net::FFNNet{N,I})
-    print(io, N, " Layers Feedforward Neural Network:\n  Input Size: ", I)
+function show(io::IO, net::FFNNet)
+    L, I = size(net)
+    print(io, L, " Layers Feedforward Neural Network:\n  Input Size: ", I)
     for (i, l) in enumerate(net.layers)
         print(io, "\n  Layer ", i, ": ", size(l), " neurons")
         if l.bias
@@ -94,7 +98,7 @@ end
 #      OTHER FUNCTIONS     #
 ############################
 """
-`propagate!(net::FFNNet{N,I}, x::Vector{Float64})`
+`propagate(net::FFNNet, x::Vector{Float64})`
 
 Propagate an input `x` through the network `net` and return the output
 
@@ -105,14 +109,14 @@ Propagate an input `x` through the network `net` and return the output
 ### Returns
 The output of the network (`Vector{Float64}`). This is simply the activation of the last layer of the network after forwardpropagating the input.
 """
-function propagate!{N,I}(net::FFNNet{N,I}, x::Vector{Float64})
-    @assert length(x) == I "Network does not support input size $length(x), only $I"
+function propagate(net::FFNNet, x::Vector{Float64})
+    @assert length(x) == net.inputsize "Network does not support input size $length(x), only $I"
 
     # Insert bias unit on input and update first layer
     update!(net.layers[1], net.weights[1] * vcat([1.0], x))
 
     # Update all remaining layers
-    for i in 2:N
+    for i in 2:length(net)
         update!(net.layers[i], net.weights[i] * activate(net.layers[i-1]))
     end
 
@@ -120,7 +124,7 @@ function propagate!{N,I}(net::FFNNet{N,I}, x::Vector{Float64})
     return activate(net.layers[end])
 end
 
-function constructbatches(perm, batchsize)
+function constructbatches(perm::Vector{Int}, batchsize::Int)
     batches = Vector{Int}[]
     while length(perm) > 0
         # Size of this batch
@@ -130,10 +134,12 @@ function constructbatches(perm, batchsize)
     return batches
 end
 
-function backpropagate{L,I}(net::FFNNet{L,I},
-                            output::Vector{Float64},
-                            target::Vector{Float64},
-                            cost::Function)
+function backpropagate(net::FFNNet,
+                       output::Vector{Float64},
+                       target::Vector{Float64},
+                       cost::Function)
+
+    L = length(net)
     # Vector storing one delta vector for each layer
     δ = Array(Vector{Float64}, L)
 
@@ -159,14 +165,14 @@ function backpropagate{L,I}(net::FFNNet{L,I},
 end
 
 """
-`train!{L,I}(net::FFNNet{L,I},
-             inputs::Vector{Vector{Float64}},
-             outputs::Vector{Vector{Float64}};
-             α::Real = 0.5,
-             η::Real = 0.1,
-             epochs::Int = 1,
-             batchsize::Int = 1,
-             cost::Function = quaderror)`
+`train!(net::FFNNet,
+        inputs::Vector{Vector{Float64}},
+        outputs::Vector{Vector{Float64}};
+        α::Real = 0.5,
+        η::Real = 0.1,
+        epochs::Int = 1,
+        batchsize::Int = 1,
+        cost::Function = quaderror)`
 
 Train the Neural Network using the examples provided in `inputs` and `outputs`.
 
@@ -182,14 +188,16 @@ Train the Neural Network using the examples provided in `inputs` and `outputs`.
 * `batchsize` (`Int`, 1 by default): Size of the batch used by the algorithm (1 is simply the default stochastic gradient descent).
 * `cost` (`Function`, `quaderror` by default): Cost function to be minimized by the learning algorithm.
 """
-function train!{L,I}(net::FFNNet{L,I},
-                     inputs::Vector{Vector{Float64}},
-                     outputs::Vector{Vector{Float64}};
-                     α::Real = 0.5,               # Learning rate
-                     η::Real = 0.1,               # Momentum rate
-                     epochs::Int = 1,             # Iterations through entire data
-                     batchsize::Int = 1,          # Number of examples on each iteration
-                     cost::Function = quaderror)  # Cost function
+function train!(net::FFNNet,
+                inputs::Vector{Vector{Float64}},
+                outputs::Vector{Vector{Float64}};
+                α::Real = 0.5,               # Learning rate
+                η::Real = 0.1,               # Momentum rate
+                epochs::Int = 1,             # Iterations through entire data
+                batchsize::Int = 1,          # Number of examples on each iteration
+                cost::Function = quaderror)  # Cost function
+
+    L = length(net)
 
     # Initialize gradient matrices
     grad      = Matrix{Float64}[zeros(i) for i in net.weights]
@@ -206,7 +214,7 @@ function train!{L,I}(net::FFNNet{L,I},
             for ex in batch
                 input_ex   = vcat([1.0], inputs[ex])     # Example's input with bias
                 output_ex  = outputs[ex]                 # Example's output
-                output_net = propagate!(net, inputs[ex]) # Network's output
+                output_net = propagate(net, inputs[ex]) # Network's output
 
                 # Find the δs using the backpropagation of this example
                 δ = backpropagate(net, output_net, output_ex, cost)
@@ -218,14 +226,14 @@ function train!{L,I}(net::FFNNet{L,I},
                 end
             end
 
-            for i in 1:L
+            for l in 1:L
                 # Update Weights using Momentum Gradient Descent
-                #  W^(L) = W^(L) - α∇E - η∇E_old
-                net.weights[i] -= α*grad[i] + η*last_grad[i]
+                #  W^(l) = W^(l) - α∇E - η∇E_old
+                net.weights[l] -= α*grad[l] + η*last_grad[l]
                 # Save last gradients
-                last_grad[i][:] = grad[i][:]
+                last_grad[l][:] = grad[l][:]
                 # Reset gradient component for the next batch
-                grad[i][:] = 0.0
+                grad[l][:] = 0.0
             end
         end
     end

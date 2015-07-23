@@ -99,7 +99,7 @@ A variable of type `FFNNLayer` has a field called `activation`, that specifies t
 While this network isn't trained yet, we already can try to make it predict the output of an input, by typing:
 
 ```julia
-propagate!(net, [1.0, 2.0, 1.0])
+propagate(net, [1.0, 2.0, 1.0])
 ```
 
 Since the network is initialized with random weights, the output in this case will be a 2-element vector containing gibberish.

@@ -89,23 +89,23 @@ facts("Network") do
 
         layer1 = FFNNLayer(10)
         layer2 = FFNNLayer(10, softmax, bias = false)
-        @fact FFNNet([layer1, layer2], 10)
+        @fact FFNNet([layer1, layer2], 10) => anything
 
         @fact_throws FFNNet(10)
         @fact_throws FFNNet(10,10)
     end
 
-    net1 FFNNet(10,10,10)
-    net2 FFNNet(10,10,10,10,10)
+    net1 = FFNNet(10,10,10)
+    net2 = FFNNet(10,10,10,10,10)
 
     context("Basic informations of a network") do
-        @fact length(net1) => 3
-        @fact length(net2) => 5
+        @fact length(net1) => 2
+        @fact length(net2) => 4
     end
 
     context("Propagating examples") do
-        @fact (typeof(propagate!(net1, ones(10))) == Vector{Float64}) => true
-        @fact (typeof(propagate!(net2, ones(10))) == Vector{Float64}) => true
+        @fact (typeof(propagate(net1, ones(10))) == Vector{Float64}) => true
+        @fact (typeof(propagate(net2, ones(10))) == Vector{Float64}) => true
     end
 
     context("Training") do

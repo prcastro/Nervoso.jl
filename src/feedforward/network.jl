@@ -42,9 +42,6 @@ function FFNNet(sizes::Int...)
     return FFNNet(layers, sizes[1])
 end
 
-#############################
-#        CONSTRUCTORS       #
-#############################
 """
 `FFNNet(sizes::Int...)`
 

@@ -188,7 +188,7 @@ facts("Cost functions") do
     context("Cross-entropy Error") do
         @fact der(ceerror) == NeuralNetsLite.derivatives[ceerror] --> true
         @fact der(ceerror) == NeuralNetsLite.ceerrorprime --> true
-        @fact ceerror([0.5,0.5], [0.5,0.5]) .< [Inf] --> true
+        @fact ceerror([0.5,0.5], [0.5,0.5]) .< [Inf] --> Bool[true]
         @fact NeuralNetsLite.ceerrorprime([0.5,0.5], [0.5,0.5]) --> [-1.0, -1.0]
     end
 end

@@ -178,4 +178,17 @@ facts("Activation functions") do
 end
 
 facts("Cost functions") do
+    context("Quadratic Error") do
+        @fact der(quaderror) --> derivative[quaderror]
+        @fact der(quaderror) --> quaderrorprime
+        @fact quaderror([1.0,0.0], [0.0,1.0]) --> roughly(1.0)
+        @fact quaderrorprime([1.0,0.0], [0.0,1.0]) --> [1.0,-1.0]
+    end
+
+    context("Cross-entropy Error") do
+        @fact der(ceerror) --> derivative[ceerror]
+        @fact der(ceerror) --> ceerrorprime
+        @fact ceerror([0.5,0.5], [0.5,0.5]) < Inf --> true
+        @fact ceerrorprime([0.5,0.5], [0.5,0.5]) --> [-1.0, -1.0]
+    end
 end

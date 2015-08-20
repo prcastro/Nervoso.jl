@@ -179,14 +179,14 @@ end
 
 facts("Cost functions") do
     context("Quadratic Error") do
-        @fact der(quaderror) == NeuralNetsLite.derivative[quaderror] --> true
+        @fact der(quaderror) == NeuralNetsLite.derivatives[quaderror] --> true
         @fact der(quaderror) == NeuralNetsLite.quaderrorprime --> true
         @fact quaderror([1.0,0.0], [0.0,1.0]) --> roughly(1.0)
         @fact NeuralNetsLite.quaderrorprime([1.0,0.0], [0.0,1.0]) --> [1.0,-1.0]
     end
 
     context("Cross-entropy Error") do
-        @fact der(ceerror) == NeuralNetsLite.derivative[ceerror] --> true
+        @fact der(ceerror) == NeuralNetsLite.derivatives[ceerror] --> true
         @fact der(ceerror) == NeuralNetsLite.ceerrorprime --> true
         @fact ceerror([0.5,0.5], [0.5,0.5]) .< [Inf] --> true
         @fact NeuralNetsLite.ceerrorprime([0.5,0.5], [0.5,0.5]) --> [-1.0, -1.0]

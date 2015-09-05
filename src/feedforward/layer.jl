@@ -89,6 +89,12 @@ start(l::FFNNLayer) = 1
 done(l::FFNNLayer, s) = s > length(l)
 next(l::FFNNLayer, s) = (l[s], s+1)
 
+function ==(l1::FFNNLayer, l2::FFNNLayer)
+    (size(l1.neurons) == size(l2.neurons)) &&
+    (l1.activation == l2.activation) &&
+    (l1.bias == l2.bias)
+end
+
 ############################
 #      OTHER FUNCTIONS     #
 ############################

@@ -1,6 +1,6 @@
 module NeuralNetsLite
 
-import Base: show, length, size, endof, getindex, setindex!,
+import Base: ==, show, length, size, endof, getindex, setindex!,
              start, next, done, tanh
 
 include("utils.jl")

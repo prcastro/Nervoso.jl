@@ -3,8 +3,8 @@ using FactCheck
 
 facts("Layer") do
     context("Build a layer") do
-        @fact FFNNLayer(10) --> anything
-        @fact FFNNLayer(10, softmax, bias = false) --> anything
+        @fact FFNNLayer(10) --> :something
+        @fact FFNNLayer(10, softmax, bias = false) --> :something
 
         layer1 = FFNNLayer(10)
         layer2 = FFNNLayer(10, softmax, bias = false)
@@ -25,12 +25,11 @@ facts("Layer") do
     layer1 = FFNNLayer(10)
     layer2 = FFNNLayer(10, softmax, bias = false)
 
-
-
     context("Basic informations of a layer") do
         context("Default activation") do
             @fact layer1 == FFNNLayer(10, tanh) --> true
         end
+
         context("Size and length") do
             @fact size(layer1)   --> 10
             @fact length(layer2) --> 10
@@ -89,12 +88,12 @@ end
 
 facts("Network") do
     context("Build a network") do
-        @fact FFNNet(10,10,10) --> anything
-        @fact FFNNet(10,10,10,10,10) --> anything
+        @fact FFNNet(10,10,10) --> :something
+        @fact FFNNet(10,10,10,10,10) --> :something
 
         layer1 = FFNNLayer(10)
         layer2 = FFNNLayer(10, softmax, bias = false)
-        @fact FFNNet([layer1, layer2], 10) --> anything
+        @fact FFNNet([layer1, layer2], 10) --> :something
 
         @fact_throws FFNNet(10)
         @fact_throws FFNNet(10,10)

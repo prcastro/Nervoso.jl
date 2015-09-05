@@ -11,9 +11,6 @@ quaderror(output, target) = 0.5*norm(target - output)^2
 "Derivative of the quadratic error with respect to the outputs"
 quaderrorprime(output, target) = (output - target)
 
-# Insert quaderrorprime into derivatives dictionary
-derivatives[quaderror] = quaderrorprime
-
 #============================#
 #    CROSS-ENTROPY ERROR     #
 #============================#
@@ -23,6 +20,3 @@ ceerror(output, target) = -output'log(target)
 
 "Derivative of the cross-entropy error with respect to the outputs"
 ceerrorprime(output, target) = -target ./ output
-
-# Insert quaderrorprime into derivatives dictionary
-derivatives[ceerror] = ceerrorprime

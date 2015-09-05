@@ -18,8 +18,6 @@ function tanhprime(l::FFNNLayer)
     diagm(map(xi -> sech(xi)^2, l.neurons))
 end
 
-derivatives[tanh] = tanhprime
-
 #============================#
 #          SOFTMAX           #
 #============================#
@@ -37,5 +35,3 @@ function softmaxprime(l::FFNNLayer)
     delta(i,j) = (i==j) ? 1 : 0
     return Float64[softmax(l, i)*(delta(i,j) - softmax(l,j)) for i in 1:length(l.neurons), j in 1:length(l.neurons)]
 end
-
-derivatives[softmax] = softmaxprime

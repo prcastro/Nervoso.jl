@@ -25,7 +25,12 @@ facts("Layer") do
     layer1 = FFNNLayer(10)
     layer2 = FFNNLayer(10, softmax, bias = false)
 
+
+
     context("Basic informations of a layer") do
+        context("Default activation") do
+            @fact layer1 == FFNNLayer(10, tanh) --> true
+        end
         context("Size and length") do
             @fact size(layer1)   --> 10
             @fact length(layer2) --> 10
@@ -101,6 +106,8 @@ facts("Network") do
     context("Basic informations of a network") do
         @fact length(net1) --> 2
         @fact length(net2) --> 4
+        @fact size(net1) --> (2,2)
+        @fact size(net2) --> (2,4)
     end
 
     context("Propagating examples") do

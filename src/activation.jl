@@ -39,8 +39,3 @@ function softmaxprime(l::FFNNLayer)
 end
 
 derivatives[softmax] = softmaxprime
-
-#============================#
-#          LOGISTIC          #
-#============================#
-σ(x) = 1/(1 + e^(-x))

@@ -11,7 +11,8 @@ pages:
     - 'Creating the network': 'usage/network.md'
     - 'Predicting and training': 'usage/training.md'
     - 'Measuring performance': 'usage/performance.md'
-    - 'Extending the library': 'usage/extending.md'
+- Developing:
+    - 'Extending the library': 'developing/extending.md'
 
 extra_javascript:
     - http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML

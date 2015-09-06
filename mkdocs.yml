@@ -12,3 +12,7 @@ pages:
     - 'Predicting and training': 'usage/training.md'
     - 'Measuring performance': 'usage/performance.md'
     - 'Extending the library': 'usage/extending.md'
+
+extra_javascript: ['https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML','js/mathjaxhelper.js']
+
+markdown_extensions: ['extra', 'mathjax']

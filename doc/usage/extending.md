@@ -12,7 +12,7 @@ To define a new cost function, you should define a function with the following s
 function newcost(output::Vector{Real}, target::Vector{Real})
 ```
 
-This function must return a cost of type `Float64`. Alongside this function you must define it's gradient with respect to the output vector, like this:
+This function must return a cost of type `Float64`. Alongside this function you must define it's gradient (\(\nabla \phi\)) with respect to the output vector, like this:
 
 ```julia
 function newcostprime(output::Vector{Real}, target::Vector{Real})

@@ -1,0 +1,8 @@
+site_name: NeuralNetsLite.jl
+
+site_description: Simple Neural Networks library written in Julia
+
+repo_url: https://github.com/prcastro/NeuralNetsLite.jl
+
+pages:
+- 'Introduction': 'index.md'

@@ -6,3 +6,9 @@ repo_url: https://github.com/prcastro/NeuralNetsLite.jl
 
 pages:
 - 'Introduction': 'index.md'
+- Usage:
+    - 'Preparing the dataset': 'usage/data.md'
+    - 'Creating the network': 'usage/network.md'
+    - 'Predicting and training': 'usage/training.md'
+    - 'Measuring performance': 'usage/performance.md'
+    - 'Extending the library': 'usage/extending.md'

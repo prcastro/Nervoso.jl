@@ -1,9 +1,9 @@
 # NeuralNetsLite
 
+[![Documentation Status](https://readthedocs.org/projects/neuralnetslitejl/badge/?version=latest)](https://readthedocs.org/projects/neuralnetslitejl/?badge=latest)
 [![Build Status](https://travis-ci.org/prcastro/NeuralNetsLite.jl.svg?branch=master)](https://travis-ci.org/prcastro/NeuralNetsLite.jl)
 [![Coverage Status](https://coveralls.io/repos/prcastro/NeuralNetsLite.jl/badge.svg?branch=master&service=github)](https://coveralls.io/github/prcastro/NeuralNetsLite.jl?branch=master)
 [![License](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](LICENSE.md)
-
 
 This package provides a simple implementation of Feedforward Neural Networks.
 

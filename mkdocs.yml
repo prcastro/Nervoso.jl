@@ -13,6 +13,8 @@ pages:
     - 'Measuring performance': 'usage/performance.md'
     - 'Extending the library': 'usage/extending.md'
 
-extra_javascript: ['https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML','js/mathjaxhelper.js']
+extra_javascript:
+    - http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML
 
-markdown_extensions: ['extra', 'mathjax']
+markdown_extensions:
+    - mdx_math

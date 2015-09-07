@@ -25,4 +25,4 @@ To use this package, run:
 using NeuralNetsLite
 ```
 
-To learn how to use the library, check out the [documentation](https://readthedocs.org/projects/neuralnetslitejl/badge/?version=latest).
+To learn how to use the library, check out the [documentation](http://neuralnetslitejl.readthedocs.org/en/latest).

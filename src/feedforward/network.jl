@@ -38,7 +38,7 @@ function FFNNet(sizes::Int...)
     # Create an Array of Neural Network Layers of the right sizes
     # The first size corresponds to the input size of the network
     layers = Array(FFNNLayer, length(sizes) - 1)
-    for i in 2:length(sizes) - 1
+    @inbounds for i in 2:length(sizes) - 1
         layers[i - 1] = FFNNLayer(sizes[i])
     end
     layers[end] = FFNNLayer(sizes[end], bias=false) # Last layer without bias
@@ -70,7 +70,7 @@ function FFNNet(layers::Vector{FFNNLayer}, inputsize::Int)
     weights[1] = rand(size(layers[1]), inputsize + 1)*2*eps - eps
 
     # Matrices from layer i-1 (including bias) to layer i
-    for i in 2:length(layers)
+    @inbounds for i in 2:length(layers)
         eps = ɛ(size(layers[i]), size(layers[i-1]))
         weights[i] = rand(size(layers[i]), size(layers[i-1]) + 1)
     end
@@ -120,7 +120,7 @@ function propagate(net::FFNNet, x::Vector{Float64})
     update!(net.layers[1], net.weights[1] * vcat([1.0], x))
 
     # Update all remaining layers
-    for i in 2:length(net)
+    @inbounds for i in 2:length(net)
         update!(net.layers[i], net.weights[i] * activate(net.layers[i-1]))
     end
 
@@ -153,7 +153,7 @@ function backpropagate(net::FFNNet,
     δ[L] = (der(last.activation)(last))' * der(cost)(output, target)
 
     # Find δ of previous layers, backwards
-    for l in (L-1):-1:1
+    @inbounds for l in (L-1):-1:1
        layer = net.layers[l] # Current layer
        W = net.weights[l+1]  # W^(l+1)
 
@@ -230,7 +230,7 @@ function train!(net::FFNNet,
                 end
             end
 
-            for l in 1:L
+            @inbounds for l in 1:L
                 # Update Weights using Momentum Gradient Descent
                 #  W^(l) = W^(l) - α∇E - η∇E_old
                 net.weights[l] -= α*grad[l] + η*last_grad[l]

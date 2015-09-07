@@ -10,7 +10,6 @@ save("temp.md", NeuralNetsLite, Config(
 open("temp.md") do temp
     d = readall(temp)
 
-    d = replace(d, r"# NeuralNetsLite", "# API Reference")
 
     # Remove docstring signatures
     d = replace(d, r"\n+\s*`[^`]*`\s*\n+", "\n\n")
@@ -27,6 +26,9 @@ open("temp.md") do temp
 
     # Add newline after permalinks
     d = replace(d, r"\[¶\](.*)", s -> string(s,"\n"))
+
+    # Change title
+    d = replace(d, r"# NeuralNetsLite", "# API Reference")
 
     # Save
     open(joinpath("reference", "api.md"), "w") do f

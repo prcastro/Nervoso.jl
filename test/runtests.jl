@@ -1,5 +1,4 @@
-using NeuralNetsLite
-using FactCheck
+using NeuralNetsLite, FactCheck
 
 facts("Layer") do
     context("Build a layer") do
@@ -112,6 +111,10 @@ facts("Network") do
     context("Propagating examples") do
         @fact (typeof(propagate(net1, ones(2))) == Vector{Float64}) --> true
         @fact (typeof(propagate(net2, ones(2))) == Vector{Float64}) --> true
+        @fact_throws propagate(net1, ones(1))
+        @fact_throws propagate(net1, ones(3))
+        @fact_throws propagate(net2, ones(1))
+        @fact_throws propagate(net2, ones(3))
     end
 
     inputs = Vector{Float64}[

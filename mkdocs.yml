@@ -11,6 +11,7 @@ pages:
     - 'Creating the network': 'usage/network.md'
     - 'Predicting and training': 'usage/training.md'
     - 'Measuring performance': 'usage/performance.md'
+    - 'Model tuning': 'usage/tuning.md'
 - Worked Examples:
     - 'XOR': 'examples/xor.md'
 - Reference:

@@ -31,7 +31,9 @@ Construct a network given the input size and the sizes of each layer. By default
 A Neural Network (`FFNNet{N,I}`)
 """
 function FFNNet(sizes::Int...)
-    @assert length(sizes) >= 3 "Network must have at least one hidden layer"
+    if length(sizes) < 3
+        error("Network must have at least one hidden layer")
+    end
 
     # Create an Array of Neural Network Layers of the right sizes
     # The first size corresponds to the input size of the network
@@ -110,7 +112,9 @@ Propagate an input `x` through the network `net` and return the output
 The output of the network (`Vector{Float64}`). This is simply the activation of the last layer of the network after forwardpropagating the input.
 """
 function propagate(net::FFNNet, x::Vector{Float64})
-    @assert length(x) == net.inputsize "Network does not support input size $length(x), only $I"
+    if length(x) != net.inputsize
+        error("Network does not support input size $length(x), only $net.inputsize")
+    end
 
     # Insert bias unit on input and update first layer
     update!(net.layers[1], net.weights[1] * vcat([1.0], x))

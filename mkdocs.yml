@@ -11,6 +11,8 @@ pages:
     - 'Creating the network': 'usage/network.md'
     - 'Predicting and training': 'usage/training.md'
     - 'Measuring performance': 'usage/performance.md'
+- Worked Examples:
+    - 'XOR': 'examples/xor.md'
 - Reference:
     - 'API Reference': 'reference/api.md'
 - Developing:

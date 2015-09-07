@@ -1,31 +1,25 @@
-# NeuralNetsLite
+# API Reference
 
 
 ---
 
 <a id="method__activate.1" class="lexicon_definition"></a>
-#### activate(l::NeuralNetsLite.FFNNLayer) [¶](#method__activate.1)
-Activation of a Neural Network layer
+`activate(l::FFNNLayer)`[¶](#method__activate.1)
 
-*source:*
-[NeuralNetsLite/src/feedforward/layer.jl:102](https://github.com/prcastro/NeuralNetsLite.jl/tree/f80446ab45092c6be32ac2e0789517eca5460628/src/feedforward/layer.jl#L102)
+Activation of a Neural Network layer
 
 ---
 
 <a id="method__ceerror.1" class="lexicon_definition"></a>
-#### ceerror(output,  target) [¶](#method__ceerror.1)
-Cross-entropy error between the output of the network and a target
+`ceerror(output,  target)`[¶](#method__ceerror.1)
 
-*source:*
-[NeuralNetsLite/src/cost.jl:19](https://github.com/prcastro/NeuralNetsLite.jl/tree/f80446ab45092c6be32ac2e0789517eca5460628/src/cost.jl#L19)
+Cross-entropy error between the output of the network and a target
 
 ---
 
 <a id="method__classerror.1" class="lexicon_definition"></a>
-#### classerror(net::NeuralNetsLite.FFNNet,  inputs::Array{Array{Float64, 1}, 1},  outputs::Array{Array{Float64, 1}, 1}) [¶](#method__classerror.1)
-`classerror(net::FFNNet,
-                 inputs::Vector{Vector{Float64}},
-                 outputs::Vector{Vector{Float64}})`
+`classerror(net::FFNNet,  inputs::Array{Array{Float64, 1}, 1},  outputs::Array{Array{Float64, 1}, 1})`[¶](#method__classerror.1)
+
 
 Classification error of the network in this sample (consisting of `inputs` and
 `outputs`). The error is measured counting the ammount of misclassified inputs.
@@ -41,24 +35,18 @@ This function assumes that a classification of a vector is the index of the maxi
 Therefore, it's natural to use `softmax` activation on the last layer of `net` and *one-hot* encoding on the examples' outputs, but it's not mandatory.
 
 
-*source:*
-[NeuralNetsLite/src/feedforward/performance.jl:48](https://github.com/prcastro/NeuralNetsLite.jl/tree/f80446ab45092c6be32ac2e0789517eca5460628/src/feedforward/performance.jl#L48)
-
 ---
 
 <a id="method__der.1" class="lexicon_definition"></a>
-#### der(f::Function) [¶](#method__der.1)
-Derivative of a function
+`der(f::Function)`[¶](#method__der.1)
 
-*source:*
-[NeuralNetsLite/src/utils.jl:10](https://github.com/prcastro/NeuralNetsLite.jl/tree/f80446ab45092c6be32ac2e0789517eca5460628/src/utils.jl#L10)
+Derivative of a function
 
 ---
 
 <a id="method__meanerror.1" class="lexicon_definition"></a>
-#### meanerror(net::NeuralNetsLite.FFNNet,  inputs::Array{Array{Float64, 1}, 1},  outputs::Array{Array{Float64, 1}, 1}) [¶](#method__meanerror.1)
-`meanerror(net::FFNNet,inputs::Vector{Vector{Float64}},
-   outputs::Vector{Vector{Float64}}; cost::Function = quaderror)`
+`meanerror(net::FFNNet,  inputs::Array{Array{Float64, 1}, 1},  outputs::Array{Array{Float64, 1}, 1})`[¶](#method__meanerror.1)
+
 
 Mean error of the network in this sample (consisting of `inputs` and `outputs`). The error is measured using `cost` function.
 
@@ -72,14 +60,11 @@ Mean error of the network in this sample (consisting of `inputs` and `outputs`).
 * `cost` (`Function`, `quaderror` by default): Cost function to be used as error measure.
 
 
-*source:*
-[NeuralNetsLite/src/feedforward/performance.jl:18](https://github.com/prcastro/NeuralNetsLite.jl/tree/f80446ab45092c6be32ac2e0789517eca5460628/src/feedforward/performance.jl#L18)
-
 ---
 
 <a id="method__propagate.1" class="lexicon_definition"></a>
-#### propagate(net::NeuralNetsLite.FFNNet,  x::Array{Float64, 1}) [¶](#method__propagate.1)
-`propagate(net::FFNNet, x::Vector{Float64})`
+`propagate(net::FFNNet,  x::Array{Float64, 1})`[¶](#method__propagate.1)
+
 
 Propagate an input `x` through the network `net` and return the output
 
@@ -91,30 +76,18 @@ Propagate an input `x` through the network `net` and return the output
 The output of the network (`Vector{Float64}`). This is simply the activation of the last layer of the network after forwardpropagating the input.
 
 
-*source:*
-[NeuralNetsLite/src/feedforward/network.jl:112](https://github.com/prcastro/NeuralNetsLite.jl/tree/f80446ab45092c6be32ac2e0789517eca5460628/src/feedforward/network.jl#L112)
-
 ---
 
 <a id="method__quaderror.1" class="lexicon_definition"></a>
-#### quaderror(output,  target) [¶](#method__quaderror.1)
-Quadratic error between the output of the network and a target
+`quaderror(output,  target)`[¶](#method__quaderror.1)
 
-*source:*
-[NeuralNetsLite/src/cost.jl:9](https://github.com/prcastro/NeuralNetsLite.jl/tree/f80446ab45092c6be32ac2e0789517eca5460628/src/cost.jl#L9)
+Quadratic error between the output of the network and a target
 
 ---
 
 <a id="method__train.1" class="lexicon_definition"></a>
-#### train!(net::NeuralNetsLite.FFNNet,  inputs::Array{Array{Float64, 1}, 1},  outputs::Array{Array{Float64, 1}, 1}) [¶](#method__train.1)
-`train!(net::FFNNet,
-        inputs::Vector{Vector{Float64}},
-        outputs::Vector{Vector{Float64}};
-        α::Real = 0.5,
-        η::Real = 0.1,
-        epochs::Int = 1,
-        batchsize::Int = 1,
-        cost::Function = quaderror)`
+`train!(net::FFNNet,  inputs::Array{Array{Float64, 1}, 1},  outputs::Array{Array{Float64, 1}, 1})`[¶](#method__train.1)
+
 
 Train the Neural Network using the examples provided in `inputs` and `outputs`.
 
@@ -131,23 +104,18 @@ Train the Neural Network using the examples provided in `inputs` and `outputs`.
 * `cost` (`Function`, `quaderror` by default): Cost function to be minimized by the learning algorithm.
 
 
-*source:*
-[NeuralNetsLite/src/feedforward/network.jl:191](https://github.com/prcastro/NeuralNetsLite.jl/tree/f80446ab45092c6be32ac2e0789517eca5460628/src/feedforward/network.jl#L191)
-
 ---
 
 <a id="method__update.1" class="lexicon_definition"></a>
-#### update!(l::NeuralNetsLite.FFNNLayer,  x::Array{Float64, 1}) [¶](#method__update.1)
-Update the internal values of the neurons of a layer 
+`update!(l::FFNNLayer,  x::Array{Float64, 1})`[¶](#method__update.1)
 
-*source:*
-[NeuralNetsLite/src/feedforward/layer.jl:105](https://github.com/prcastro/NeuralNetsLite.jl/tree/f80446ab45092c6be32ac2e0789517eca5460628/src/feedforward/layer.jl#L105)
+Update the internal values of the neurons of a layer
 
 ---
 
 <a id="type__ffnnlayer.1" class="lexicon_definition"></a>
-#### NeuralNetsLite.FFNNLayer [¶](#type__ffnnlayer.1)
-`type FFNNLayer`
+`API Reference.FFNNLayer`[¶](#type__ffnnlayer.1)
+
 
 Type representing a Neural Network 1-D layer with `N` neurons and, eventually, a bias unit.
 
@@ -157,14 +125,11 @@ Type representing a Neural Network 1-D layer with `N` neurons and, eventually, a
 * `bias` (`Bool`): True if there is a bias unit in this layer
 
 
-*source:*
-[NeuralNetsLite/src/feedforward/layer.jl:13](https://github.com/prcastro/NeuralNetsLite.jl/tree/f80446ab45092c6be32ac2e0789517eca5460628/src/feedforward/layer.jl#L13)
-
 ---
 
 <a id="type__ffnnet.1" class="lexicon_definition"></a>
-#### NeuralNetsLite.FFNNet [¶](#type__ffnnet.1)
-`type FFNNet`
+`API Reference.FFNNet`[¶](#type__ffnnet.1)
+
 
 Type representing a Neural Network.
 
@@ -174,24 +139,19 @@ Type representing a Neural Network.
 * `inputsize` (`Int`): Input size accepted by this network
 
 
-*source:*
-[NeuralNetsLite/src/feedforward/network.jl:13](https://github.com/prcastro/NeuralNetsLite.jl/tree/f80446ab45092c6be32ac2e0789517eca5460628/src/feedforward/network.jl#L13)
-
 ---
 
 <a id="global__derivatives.1" class="lexicon_definition"></a>
-#### derivatives [¶](#global__derivatives.1)
-Dictionary associating functions with their derivatives
+`derivatives`[¶](#global__derivatives.1)
 
-*source:*
-[NeuralNetsLite/src/utils.jl:7](https://github.com/prcastro/NeuralNetsLite.jl/tree/f80446ab45092c6be32ac2e0789517eca5460628/src/utils.jl#L7)
+Dictionary associating functions with their derivatives
 
 
 ---
 
 <a id="method__call.1" class="lexicon_definition"></a>
-#### call(::Type{NeuralNetsLite.FFNNLayer},  n::Integer) [¶](#method__call.1)
-`FFNNLayer(n::Integer; bias::Bool = true)`
+`call(::Type{FFNNLayer},  n::Integer)`[¶](#method__call.1)
+
 
 Construct a 1-D layer of a Neural Network with `n` neurons and, eventually, a bias unit. The layer has `tanh` as activation function
 
@@ -202,14 +162,11 @@ Construct a 1-D layer of a Neural Network with `n` neurons and, eventually, a bi
 * `bias` (`Bool`, `true` by default): True if there is a bias unit in this layer
 
 
-*source:*
-[NeuralNetsLite/src/feedforward/layer.jl:34](https://github.com/prcastro/NeuralNetsLite.jl/tree/f80446ab45092c6be32ac2e0789517eca5460628/src/feedforward/layer.jl#L34)
-
 ---
 
 <a id="method__call.2" class="lexicon_definition"></a>
-#### call(::Type{NeuralNetsLite.FFNNLayer},  n::Integer,  f::Function) [¶](#method__call.2)
-`FFNNLayer(n::Integer; bias::Bool = true)`
+`call(::Type{FFNNLayer},  n::Integer,  f::Function)`[¶](#method__call.2)
+
 
 Construct a 1-D layer of a Neural Network with `n` neurons, `f` as activation function and, eventually, a bias unit.
 
@@ -221,14 +178,11 @@ Construct a 1-D layer of a Neural Network with `n` neurons, `f` as activation fu
 * `bias` (`Bool`, `true` by default): True if there is a bias unit in this layer
 
 
-*source:*
-[NeuralNetsLite/src/feedforward/layer.jl:54](https://github.com/prcastro/NeuralNetsLite.jl/tree/f80446ab45092c6be32ac2e0789517eca5460628/src/feedforward/layer.jl#L54)
-
 ---
 
 <a id="method__call.3" class="lexicon_definition"></a>
-#### call(::Type{NeuralNetsLite.FFNNet},  layers::Array{NeuralNetsLite.FFNNLayer, 1},  inputsize::Int64) [¶](#method__call.3)
-`FFNNet(sizes::Int...)`
+`call(::Type{FFNNet},  layers::Array{FFNNLayer, 1},  inputsize::Int64)`[¶](#method__call.3)
+
 
 Construct a network given its layers and its input size.
 
@@ -240,14 +194,11 @@ Construct a network given its layers and its input size.
 A Neural Network (`FFNNet`)
 
 
-*source:*
-[NeuralNetsLite/src/feedforward/network.jl:59](https://github.com/prcastro/NeuralNetsLite.jl/tree/f80446ab45092c6be32ac2e0789517eca5460628/src/feedforward/network.jl#L59)
-
 ---
 
 <a id="method__call.4" class="lexicon_definition"></a>
-#### call(::Type{NeuralNetsLite.FFNNet},  sizes::Int64...) [¶](#method__call.4)
-`FFNNet(sizes::Int...)`
+`call(::Type{FFNNet},  sizes::Int64...)`[¶](#method__call.4)
+
 
 Construct a network given the input size and the sizes of each layer. By default, the hidden layers have an bias unit and the output layer don't. One the other hand, all the layers have `tanh` as activation function by default.
 
@@ -258,33 +209,23 @@ Construct a network given the input size and the sizes of each layer. By default
 A Neural Network (`FFNNet{N,I}`)
 
 
-*source:*
-[NeuralNetsLite/src/feedforward/network.jl:33](https://github.com/prcastro/NeuralNetsLite.jl/tree/f80446ab45092c6be32ac2e0789517eca5460628/src/feedforward/network.jl#L33)
-
 ---
 
 <a id="method__ceerrorprime.1" class="lexicon_definition"></a>
-#### ceerrorprime(output,  target) [¶](#method__ceerrorprime.1)
-Derivative of the cross-entropy error with respect to the outputs
+`ceerrorprime(output,  target)`[¶](#method__ceerrorprime.1)
 
-*source:*
-[NeuralNetsLite/src/cost.jl:22](https://github.com/prcastro/NeuralNetsLite.jl/tree/f80446ab45092c6be32ac2e0789517eca5460628/src/cost.jl#L22)
+Derivative of the cross-entropy error with respect to the outputs
 
 ---
 
 <a id="method__quaderrorprime.1" class="lexicon_definition"></a>
-#### quaderrorprime(output,  target) [¶](#method__quaderrorprime.1)
-Derivative of the quadratic error with respect to the outputs
+`quaderrorprime(output,  target)`[¶](#method__quaderrorprime.1)
 
-*source:*
-[NeuralNetsLite/src/cost.jl:12](https://github.com/prcastro/NeuralNetsLite.jl/tree/f80446ab45092c6be32ac2e0789517eca5460628/src/cost.jl#L12)
+Derivative of the quadratic error with respect to the outputs
 
 ---
 
 <a id="method__8855.1" class="lexicon_definition"></a>
-#### ⊗(a::Array{Float64, 1},  b::Array{Float64, 1}) [¶](#method__8855.1)
+`⊗(a::Array{Float64, 1},  b::Array{Float64, 1})`[¶](#method__8855.1)
+
 Outer product
-
-*source:*
-[NeuralNetsLite/src/utils.jl:4](https://github.com/prcastro/NeuralNetsLite.jl/tree/f80446ab45092c6be32ac2e0789517eca5460628/src/utils.jl#L4)
-

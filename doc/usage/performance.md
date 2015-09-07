@@ -17,4 +17,4 @@ The output will be the number of misclassified point of the dataset.
 
 This works by taking the index of the maximum value of the output of the network, and comparing to the index of the maximum value of the example's output. Therefore, it's natural to use `softmax` activation on the last layer and *one-hot* encoding on the examples' outputs, but it's not mandatory.
 
-It's also easy to define new functions to assess the error committed by the network on a dataset.
+It's also easy to define new functions to assess the error committed by the network on a dataset. For a more complete set of performance tests, we recomend using the package **MLBase** alongside this library.  

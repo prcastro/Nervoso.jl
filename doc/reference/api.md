@@ -109,12 +109,12 @@ Train the Neural Network using the examples provided in `inputs` and `outputs`.
 <a id="method__update.1" class="lexicon_definition"></a>
 `update!(l::FFNNLayer,  x::Array{Float64, 1})`[¶](#method__update.1)
 
-Update the internal values of the neurons of a layer
+Update the internal values of the neurons of a layer 
 
 ---
 
 <a id="type__ffnnlayer.1" class="lexicon_definition"></a>
-`API Reference.FFNNLayer`[¶](#type__ffnnlayer.1)
+`FFNNLayer`[¶](#type__ffnnlayer.1)
 
 
 Type representing a Neural Network 1-D layer with `N` neurons and, eventually, a bias unit.
@@ -128,7 +128,7 @@ Type representing a Neural Network 1-D layer with `N` neurons and, eventually, a
 ---
 
 <a id="type__ffnnet.1" class="lexicon_definition"></a>
-`API Reference.FFNNet`[¶](#type__ffnnet.1)
+`FFNNet`[¶](#type__ffnnet.1)
 
 
 Type representing a Neural Network.
@@ -229,3 +229,4 @@ Derivative of the quadratic error with respect to the outputs
 `⊗(a::Array{Float64, 1},  b::Array{Float64, 1})`[¶](#method__8855.1)
 
 Outer product
+

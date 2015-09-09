@@ -1,5 +1,5 @@
 # Remember to install HDF5 and JLD packages
-using HDF5, JLD, NeuralNetsLite
+using HDF5, JLD, Nervoso
 
 # Initializing our examples and network
 @load "data.jld"

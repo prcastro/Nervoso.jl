@@ -1,4 +1,4 @@
-using NeuralNetsLite, FactCheck
+using Nervoso, FactCheck
 
 facts("Layer") do
     context("Build a layer") do
@@ -188,16 +188,16 @@ end
 
 facts("Cost functions") do
     context("Quadratic Error") do
-        @fact der(quaderror) == NeuralNetsLite.derivatives[quaderror] --> true
-        @fact der(quaderror) == NeuralNetsLite.quaderrorprime --> true
+        @fact der(quaderror) == Nervoso.derivatives[quaderror] --> true
+        @fact der(quaderror) == Nervoso.quaderrorprime --> true
         @fact quaderror([1.0,0.0], [0.0,1.0]) --> roughly(1.0)
-        @fact NeuralNetsLite.quaderrorprime([1.0,0.0], [0.0,1.0]) --> [1.0,-1.0]
+        @fact Nervoso.quaderrorprime([1.0,0.0], [0.0,1.0]) --> [1.0,-1.0]
     end
 
     context("Cross-entropy Error") do
-        @fact der(ceerror) == NeuralNetsLite.derivatives[ceerror] --> true
-        @fact der(ceerror) == NeuralNetsLite.ceerrorprime --> true
+        @fact der(ceerror) == Nervoso.derivatives[ceerror] --> true
+        @fact der(ceerror) == Nervoso.ceerrorprime --> true
         @fact ceerror([0.5,0.5], [0.5,0.5]) .< [Inf] --> Bool[true]
-        @fact NeuralNetsLite.ceerrorprime([0.5,0.5], [0.5,0.5]) --> [-1.0, -1.0]
+        @fact Nervoso.ceerrorprime([0.5,0.5], [0.5,0.5]) --> [-1.0, -1.0]
     end
 end

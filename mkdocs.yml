@@ -1,8 +1,8 @@
-site_name: NeuralNetsLite.jl
+site_name: Nervoso.jl
 
 site_description: Simple Neural Networks library written in Julia
 
-repo_url: https://github.com/prcastro/NeuralNetsLite.jl
+repo_url: https://github.com/prcastro/Nervoso.jl
 
 pages:
 - 'Introduction': 'index.md'

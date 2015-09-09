@@ -1,6 +1,6 @@
 VERSION >= v"0.4.0-dev+6521" && __precompile__(true)
 
-module NeuralNetsLite
+module Nervoso
 
 import Base: ==, show, length, size, endof, getindex, setindex!,
              start, next, done, tanh
@@ -20,4 +20,4 @@ function __init__()
     derivatives[ceerror]   = ceerrorprime
 end
 
-end # module NeuralNetsLite
+end # module Nervoso

@@ -1,4 +1,4 @@
-NeuralNetsLite
+Nervoso
 ==============
 
 This package offers a simple-to-understand and general implemementation of feedforward neural networks, focused on correctness and extensibility.
@@ -6,11 +6,11 @@ This package offers a simple-to-understand and general implemementation of feedf
 To install this package, run from inside Julia:
 
 ```julia
-Pkg.clone("https://github.com/prcastro/NeuralNetsLite.jl.git")
+Pkg.clone("https://github.com/prcastro/Nervoso.jl.git")
 ```
 
 To use it, run:
 
 ```julia
-using NeuralNetsLite
+using Nervoso
 ```

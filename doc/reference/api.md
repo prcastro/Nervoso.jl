@@ -109,7 +109,7 @@ Train the Neural Network using the examples provided in `inputs` and `outputs`.
 <a id="method__update.1" class="lexicon_definition"></a>
 `update!(l::FFNNLayer,  x::Array{Float64, 1})`[¶](#method__update.1)
 
-Update the internal values of the neurons of a layer 
+Update the internal values of the neurons of a layer
 
 ---
 
@@ -229,4 +229,3 @@ Derivative of the quadratic error with respect to the outputs
 `⊗(a::Array{Float64, 1},  b::Array{Float64, 1})`[¶](#method__8855.1)
 
 Outer product
-

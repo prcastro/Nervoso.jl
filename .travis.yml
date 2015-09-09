@@ -9,7 +9,7 @@ notifications:
   email: false
 script:
  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
- - julia --check-bounds=yes -e 'Pkg.clone(pwd()); Pkg.build("NeuralNetsLite"); Pkg.test("NeuralNetsLite"; coverage=true)'
+ - julia --check-bounds=yes -e 'Pkg.clone(pwd()); Pkg.build("Nervoso"); Pkg.test("Nervoso"; coverage=true)'
 after_success:
- - julia -e 'cd(Pkg.dir("NeuralNetsLite")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())'
- - julia -e 'cd(Pkg.dir("NeuralNetsLite")); using Coverage; Codecov.submit(Codecov.process_folder())'
+ - julia -e 'cd(Pkg.dir("Nervoso")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())'
+ - julia -e 'cd(Pkg.dir("Nervoso")); using Coverage; Codecov.submit(Codecov.process_folder())'

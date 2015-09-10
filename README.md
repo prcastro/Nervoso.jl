@@ -7,7 +7,7 @@
 
 This package provides a simple implementation of Feedforward Neural Networks.
 
-The main purpose of this package isn't to provide a fast implementation of the algorithms, but rather a general and extensible one, alongside an easy-to-read code. A simple paper explaining the concepts behind this package can be found [here](https://www.dropbox.com/s/yxlyowikizkdrut/NeuralNets_jl_Explanation.pdf?dl=0).
+The main purpose of this package isn't to provide a fast implementation of the algorithms, but rather a general and extensible one, alongside an easy-to-read code. A simple paper explaining the concepts behind this package can be found [here](https://www.dropbox.com/s/1jsq59pq7ngj3ss/Nervoso_jl_Explanation.pdf?dl=0).
 
 ## Installation
 

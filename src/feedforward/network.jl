@@ -85,7 +85,7 @@ length(net::FFNNet) = length(net.layers)
 size(net::FFNNet) = (net.inputsize, length(net.layers))
 
 function show(io::IO, net::FFNNet)
-    L, I = size(net)
+    I, L = size(net)
     print(io, L, " Layers Feedforward Neural Network:\n  Input Size: ", I)
     for (i, l) in enumerate(net.layers)
         print(io, "\n  Layer ", i, ": ", size(l), " neurons")

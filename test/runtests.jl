@@ -83,6 +83,22 @@ facts("Layer") do
             @fact layer2.neurons --> ones(10)
         end
     end
+
+    context("Printing") do
+        buf = IOBuffer()
+
+        show(buf, layer1)
+        repr = takebuf_string(buf)
+        @fact startswith(repr, "Feedforward Neural Net Layer:") --> true
+        @fact ismatch(r"bias", repr) --> true
+        @fact startswith(repr, "Feedforward Neural Net Layer:") --> true
+
+        show(buf, layer2)
+        repr = takebuf_string(buf)
+        @fact startswith(repr, "Feedforward Neural Net Layer:") --> true
+        @fact ismatch(r"bias", repr) --> false
+        @fact endswith(repr, "softmax") --> true
+    end
 end
 
 facts("Network") do
@@ -139,6 +155,22 @@ facts("Network") do
         @fact (typeof(meanerror(net2, inputs, outputs)) == Float64) --> true
         @fact (typeof(classerror(net1, inputs, outputs)) == Int) --> true
         @fact (typeof(classerror(net2, inputs, outputs)) == Int) --> true
+    end
+
+    context("Printing") do
+        buf = IOBuffer()
+
+        show(buf, net1)
+        repr = takebuf_string(buf)
+        @fact startswith(repr, "2 Layers") --> true
+        @fact ismatch(r"Feedforward Neural Network:", repr) --> true
+        @fact ismatch(r"Input Size:", repr) --> true
+
+        show(buf, net2)
+        repr = takebuf_string(buf)
+        @fact startswith(repr, "4 Layers") --> true
+        @fact ismatch(r"Feedforward Neural Network:", repr) --> true
+        @fact ismatch(r"Input Size:", repr) --> true
     end
 end
 

@@ -61,7 +61,9 @@ A Neural Network (`FFNNet`)
 function FFNNet(layers::Vector{FFNNLayer}, inputsize::Int)
     # Create a vector of weight matrices
     weights = Array(Matrix{Float64}, length(layers))
-
+    
+    # This weight initialization is sensible (Glorot & Bengio 2010) 
+    # W ~ U(∓ √6/√(sum of sizes of the 2 layers connected by W))
     ɛ(a,b) = sqrt(6)/(sqrt(a + b))
 
     # The first weight matrix is from the input (including bias)
